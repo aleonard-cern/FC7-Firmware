@@ -11,6 +11,7 @@ package user_package is
 	constant user_ipb_stat_regs		: integer  := 0 ;
 	constant user_ipb_ctrl_regs		: integer  := 1 ;
 
+    --=== slow control records ===--
     -- The signals going from master to slaves
     type cmd_wbus is
     record
@@ -40,6 +41,39 @@ package user_package is
     end record;
 
     type cmd_rbus_array is array(natural range <>) of cmd_rbus;
+    
+    --== triggered data to hybrid block ==--
+    subtype trig_data_to_hb_t is std_logic_vector(137 downto 0);
+    type trig_data_to_hb_t_array is array(natural range <>) of trig_data_to_hb_t;
+    
+    --== triggered data from front-end ==--
+    subtype trig_data_from_fe_t is std_logic_vector(7 downto 0);
+    type trig_data_from_fe_t_array is array(natural range <>) of trig_data_from_fe_t;
+    
+    --== stub data to hybrid block ==--
+    subtype stub_data_to_hb_t is std_logic_vector(319 downto 0);
+    type stub_data_to_hb_t_array is array(natural range <>) of stub_data_to_hb_t;
+    
+    --== stub data from front-end ==--
+    type stub_lines_r is
+    record
+        dp1: std_logic;
+        dp2: std_logic;
+        dp3: std_logic;
+        dp4: std_logic;
+        dp5: std_logic;
+    end record; 
+    type stub_lines_t is array(7 downto 0) of stub_lines_r;
+    type stub_lines_t_array is array(natural range <>) of stub_lines_t;
+    
+    --== fast command record ==--
+    type fast_cmd_t is
+    record
+        fast_reset:         std_logic;
+        trigger:            std_logic;
+        test_pulse_trigger: std_logic;
+        orbit_reset:        std_logic;
+    end record;
 
 end user_package;
    

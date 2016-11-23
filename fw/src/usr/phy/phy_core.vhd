@@ -31,8 +31,40 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
+use work.user_package.ALL;
+
 entity phy_core is
---  Port ( );
+    generic(
+        constant NHYBRID: natural range 1 to 32
+    );
+    port (
+    
+        -- fast command input bus
+        fast_cmd_i          : in fast_cmd_t;
+        
+        -- fast command serial output
+        fast_cmd_o          : std_logic;
+    
+        -- hybrid block interface for triggered data
+        trig_data_o         : out trig_data_to_hb_t_array(1 to NHYBRID);
+    
+        -- hybrid block interface for stub data
+        stub_data_o         : out stub_data_to_hb_t_array(1 to NHYBRID);
+        
+        -- triggered data lines from CBC
+        trig_data_i         : in trig_data_from_fe_t_array(1 to NHYBRID);
+    
+        -- stubs lines from CBC
+        stub_data_i         : in stub_lines_t_array(1 to NHYBRID);
+        
+        -- slow control command from command generator
+        cmd_request_i       : in cmd_wbus;
+        
+        -- slow control response to command generator
+        cmd_reply_o         : out cmd_rbus 
+        
+        
+    );
 end phy_core;
 
 architecture rtl of phy_core is
@@ -42,5 +74,16 @@ architecture rtl of phy_core is
 begin
 
     dummy_signal <= '1';
+    
+    fast_cmd_inst: entity work.fast_cmd
+    port map (
+        clk_40 => clk_40,
+        clk_320 = clk_320,
+        fast_cmd_i => fast_cmd_i,
+        fast_cmd_o => fast_cmd_o
+    );
 
+
+    -- buffers
+    
 end rtl;
