@@ -40,10 +40,10 @@ entity phy_core is
     port (
     
         -- fast command input bus
-        fast_cmd_i          : in fast_cmd_t;
+        cmd_fast_i          : in cmd_fastbus;
         
         -- fast command serial output
-        fast_cmd_o          : std_logic;
+        cmd_fast_o          : std_logic;
     
         -- hybrid block interface for triggered data
         trig_data_o         : out trig_data_to_hb_t_array(1 to NHYBRID);
@@ -75,15 +75,17 @@ begin
 
     dummy_signal <= '1';
     
+    --== fast command block ==--
     fast_cmd_inst: entity work.fast_cmd
     port map (
         clk_40 => clk_40,
         clk_320 = clk_320,
-        fast_cmd_i => fast_cmd_i,
-        fast_cmd_o => fast_cmd_o
+        cmd_fast_i => cmd_fast_i,
+        cmd_fast_o => cmd_fast_o
     );
 
-
+    --== slow control block ==--
+    
     -- buffers
     
 end rtl;

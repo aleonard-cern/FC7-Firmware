@@ -15,11 +15,11 @@ package user_package is
     -- The signals going from master to slaves
     type cmd_wbus is
     record
-       cmd_strobe           : std_logic;
+       cmd_strobe            : std_logic;
        -- hybrid_id
        cmd_hybrid_id         : std_logic_vector(4 downto 0);
        -- cbc on hybrid id
-       cmd_cbc_id            : std_logic_vector(3 downto 0);
+       cmd_chip_id           : std_logic_vector(3 downto 0);
        -- page in CBC
        cmd_page              : std_logic;
        -- read or write setting
@@ -67,7 +67,7 @@ package user_package is
     type stub_lines_t_array is array(natural range <>) of stub_lines_t;
     
     --== fast command record ==--
-    type fast_cmd_t is
+    type cmd_fastbus is
     record
         fast_reset:         std_logic;
         trigger:            std_logic;
