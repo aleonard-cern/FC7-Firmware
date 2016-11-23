@@ -77,6 +77,7 @@ begin
                 case state is
 
                     when IDLE =>
+                        -- reset the start bits
                         if (sync_from_CBC_i = '1' and triggered_data_from_CBC_i = '1') then
                             fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_CBC_i;
                             nBitsToBeReceived <= 275;
@@ -101,6 +102,7 @@ begin
                         end if;
 
                     when OUTPUT =>
+                        -- really output things
                         start <= fullFrame(275 downto 274);
                         latency_error <= fullFrame(273);
                         buffer_overflow <= fullFrame(272);

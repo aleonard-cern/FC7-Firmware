@@ -155,6 +155,9 @@ begin
                         state <= ERROR;
                     end if;
 
+                when ERROR =>
+                    
+
             end case;
         end if;
     end process;
