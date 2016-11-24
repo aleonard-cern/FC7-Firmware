@@ -74,7 +74,21 @@ package user_package is
         test_pulse_trigger: std_logic;
         orbit_reset:        std_logic;
     end record;
-
+    
+    --== triggered data frame record ==--
+    type triggered_data_frame_r is
+    record
+        start : std_logic_vector(1 downto 0);
+        latency_error : std_logic;
+        buffer_overflow: std_logic;
+        pipe_address : std_logic_vector(8 downto 0);
+        l1_counter: std_logic_vector(8 downto 0);
+        channels: std_logic_vector(253 downto 0);
+    end record;
+    
+    --== triggered data frame record array ==--
+    type triggered_data_frame_r_array is array (7 downto 0) of triggered_data_frame_r;
+    
 end user_package;
    
 package body user_package is
