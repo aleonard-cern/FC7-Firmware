@@ -92,7 +92,7 @@ begin
                     if (cmd_request.cmd_strobe = '1') then
 
                         -- save request parameters
-                        chip_address_req <= cmd_request.cmd_cbc_id; -- need a mapping between CBC id and CBC chip address
+                        chip_address_req <= cmd_request.cmd_chip_id; -- need a mapping between CBC id and CBC chip address
                         rw_req <= cmd_request.cmd_read;
                         page_req <= cmd_request.cmd_page;
                         reg_address_req <= cmd_request.cmd_register;

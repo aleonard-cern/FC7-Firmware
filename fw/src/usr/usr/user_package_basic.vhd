@@ -54,6 +54,10 @@ package user_package is
     subtype stub_data_to_hb_t is std_logic_vector(319 downto 0);
     type stub_data_to_hb_t_array is array(natural range <>) of stub_data_to_hb_t;
     
+    --==differential pairs to buffer ==--
+    subtype cbc_dp_to_buf is std_logic_vector(5 downto 0);
+    type cbc_dp_to_buf_array is array(natural range <>) of cbc_dp_to_buf;
+    
     --== stub data from front-end ==--
     type stub_lines_r is
     record
