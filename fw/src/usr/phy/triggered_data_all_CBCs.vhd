@@ -37,6 +37,7 @@ entity triggered_data_all_CBCs is
 Port ( 
     clk40 : in std_logic;
     clk320 : in std_logic;
+    reset_i : in std_logic;
     triggered_data_frame_r_array_i : in triggered_data_frame_r_array;
     trig_data_to_hb_o : out trig_data_to_hb_t
 );
@@ -46,7 +47,7 @@ architecture Behavioral of triggered_data_all_CBCs is
     type trig_data_to_hb_t_array is array (15 downto 0) of trig_data_to_hb_t;
     signal trig_data_tmp : trig_data_to_hb_t_array := (others => (others=>'0')); 
     signal is_sent : std_logic :='0';
-    signal reset : std_logic_vector(7 downto 0) := (others=>'0');
+    signal CBC_flag : std_logic_vector(7 downto 0) := (others=>'0');
       
 begin
 
@@ -55,40 +56,50 @@ begin
         variable previous_clk : std_logic := '0'; 
         variable current_clk : std_logic := '0';
         
-        variable dummy : trig_data_to_hb_t := (others =>'0');
+        constant dummy : trig_data_to_hb_t := (others =>'0');
 
     begin
         if (rising_edge(clk320)) then
             
-            previous_clk := current_clk;
-            current_clk := clk40;
-            for I in 0 to 7 loop
-                if(triggered_data_frame_r_array_i(I).start="11" and reset(I)='0') then
-                       trig_data_tmp(2*I) <= triggered_data_frame_r_array_i(I).start & triggered_data_frame_r_array_i(I).pipe_address & triggered_data_frame_r_array_i(I).channels(253 downto 127);    
-                       trig_data_tmp(2*I+1) <= triggered_data_frame_r_array_i(I).latency_error & triggered_data_frame_r_array_i(I).buffer_overflow &  triggered_data_frame_r_array_i(I).l1_counter & triggered_data_frame_r_array_i(I).channels(126 downto 0);    
-                       reset(I)<='1';
-                elsif(reset=x"FF" and is_sent='1') then
-                       reset(I)<='0';
-    
-                end if;
-            end loop;
+            if (reset_i = '1') then
             
-            if (previous_clk = '0' and current_clk = '1') then
-                if(reset = x"FF" and trig_data_tmp(0) /= dummy) then
+                is_sent <= '0';
+                trig_data_tmp <= (others => (others=>'0')); 
+                CBC_flag <= (others => '0');
+                trig_data_to_hb_o <= (others => '0');
                 
-                    trig_data_to_hb_o <= trig_data_tmp(0);
-                    trig_data_tmp <= dummy & trig_data_tmp(15 downto 1);
+            else
+            
+                previous_clk := current_clk;
+                current_clk := clk40;
+                
+                for I in 0 to 7 loop
+                    if(triggered_data_frame_r_array_i(I).start="11" and CBC_flag(I)='0') then
+                           trig_data_tmp(2*I) <= triggered_data_frame_r_array_i(I).start & triggered_data_frame_r_array_i(I).pipe_address & triggered_data_frame_r_array_i(I).channels(253 downto 127);    
+                           trig_data_tmp(2*I+1) <= triggered_data_frame_r_array_i(I).latency_error & triggered_data_frame_r_array_i(I).buffer_overflow &  triggered_data_frame_r_array_i(I).l1_counter & triggered_data_frame_r_array_i(I).channels(126 downto 0);    
+                           CBC_flag(I)<='1';
+                    elsif(CBC_flag=x"FF" and is_sent='1') then
+                           CBC_flag(I)<='0';
+        
+                    end if;
+                end loop;
+                
+                if (previous_clk = '0' and current_clk = '1') then
+                    if(CBC_flag = x"FF" and trig_data_tmp(0) /= dummy) then
                     
-                elsif (reset=x"FF" and trig_data_tmp(0)=dummy) then
-                    trig_data_to_hb_o <= dummy;
-                    is_sent <= '1';
-                else  
-                    is_sent <= '0';
-                end if;                   
+                        trig_data_to_hb_o <= trig_data_tmp(0);
+                        trig_data_tmp <= dummy & trig_data_tmp(15 downto 1);
+                        
+                    elsif (CBC_flag=x"FF" and trig_data_tmp(0)=dummy) then
+                        trig_data_to_hb_o <= dummy;
+                        is_sent <= '1';
+                    else  
+                        is_sent <= '0';
+                    end if;                   
+                    
+                end if;
                 
-            end if;
-            
-            
+            end if; --end reset condition
         end if;
        
     end process;

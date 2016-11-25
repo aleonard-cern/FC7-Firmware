@@ -67,9 +67,12 @@ begin
         if (rising_edge(clk320)) then
 
             if (reset_i = '1') then
+            
                 fullFrame <= (others =>'0');
                 nBitsToBeReceived <= 276;
                 state <= IDLE;
+                triggered_data_frame_o.start <= "00";
+
             else
                 case state is
 
@@ -140,6 +143,8 @@ begin
 
             if (reset_i = '1') then
                 fullFrame <= (others =>'0');
+                triggered_data_frame_o.start <= "00";
+
             else
                 if (fullFrame(303 downto 302) = "11" and fullFrame(27 downto 0) = x"0000000" and syncLine(303) = '1') then
                     triggered_data_frame_o.start <= fullFrame(303 downto 302);
