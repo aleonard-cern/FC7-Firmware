@@ -54,10 +54,7 @@ package user_package is
     --== triggered data from front-end ==--
     subtype trig_data_from_fe_t is std_logic_vector(7 downto 0);
     type trig_data_from_fe_t_array is array(natural range <>) of trig_data_from_fe_t;
-    
-    --== stub data to hybrid block ==--
-    subtype stub_data_to_hb_t is std_logic_vector(319 downto 0);
-    type stub_data_to_hb_t_array is array(natural range <>) of stub_data_to_hb_t;
+
     
     --== differential pairs to buffer ==--
     subtype cbc_dp_to_buf is std_logic_vector(5 downto 0);
@@ -72,7 +69,10 @@ package user_package is
         dp4 : std_logic;
         dp5 : std_logic;
     end record; 
-    type stub_lines_t is array(7 downto 0) of stub_lines_r;
+    type stub_lines_r_array is array(7 downto 0) of stub_lines_r;
+    
+        --== stub data from front-end array (for mutliple hybrids) ==--
+    type stub_lines_r_array_array is array(natural range <>) of stub_lines_r_array;
     
     type one_cbc_stubs_r is
     record
@@ -88,8 +88,12 @@ package user_package is
         bend3 : std_logic_vector(3 downto 0);                
     end record;
     
-    --== stub data from front-end array (for mutliple hybrids) ==--
-    type stub_lines_t_array is array(natural range <>) of stub_lines_t;
+        
+    --== stub data to hybrid block ==--
+    type one_cbc_stubs_r_array is array(NCBC_PER_HYBRID downto 0) of one_cbc_stubs_r;
+    
+    type stub_data_to_hb_t_array is array(natural range <>) of one_cbc_stubs_r_array;
+    
     
     --== fast command record ==--
     type cmd_fastbus is

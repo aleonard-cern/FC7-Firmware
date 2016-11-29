@@ -54,7 +54,7 @@ begin
     --== instantiate the NCBC (or NMPA) front-end chips per hybrid blocks ==--
     CBCs:
     for I in 0 to 7 generate
-        CBC_readout : entity work.triggered_data_readout
+        CBC_readout : entity work.triggered_data_readout(FSM)
         port map(
              clk320 => clk320,
              reset_i => reset_i,
