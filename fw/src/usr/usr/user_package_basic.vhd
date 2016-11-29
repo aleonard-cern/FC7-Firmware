@@ -6,10 +6,13 @@ package user_package is
 	constant sys_phase_mon_freq      : string   := "160MHz"; -- valid options only "160MHz" or "240MHz"    
 
    --=== ipb slaves =============--
-	constant nbr_usr_slaves				: positive := 2 ;
+	constant nbr_usr_slaves		    : positive := 2 ;
    
 	constant user_ipb_stat_regs		: integer  := 0 ;
 	constant user_ipb_ctrl_regs		: integer  := 1 ;
+
+
+    constant NCBC_PER_HYBRID : natural := 8;
 
     --=== slow control records ===--
     -- The signals going from master to slaves
@@ -41,7 +44,9 @@ package user_package is
     end record;
 
     type cmd_rbus_array is array(natural range <>) of cmd_rbus;
-    
+   
+    --============================-- 
+    --=== lines from front-end ===--
     --== triggered data to hybrid block ==--
     subtype trig_data_to_hb_t is std_logic_vector(137 downto 0);
     type trig_data_to_hb_t_array is array(natural range <>) of trig_data_to_hb_t;
@@ -54,40 +59,56 @@ package user_package is
     subtype stub_data_to_hb_t is std_logic_vector(319 downto 0);
     type stub_data_to_hb_t_array is array(natural range <>) of stub_data_to_hb_t;
     
-    --==differential pairs to buffer ==--
+    --== differential pairs to buffer ==--
     subtype cbc_dp_to_buf is std_logic_vector(5 downto 0);
     type cbc_dp_to_buf_array is array(natural range <>) of cbc_dp_to_buf;
     
     --== stub data from front-end ==--
     type stub_lines_r is
     record
-        dp1: std_logic;
-        dp2: std_logic;
-        dp3: std_logic;
-        dp4: std_logic;
-        dp5: std_logic;
+        dp1 : std_logic;
+        dp2 : std_logic;
+        dp3 : std_logic;
+        dp4 : std_logic;
+        dp5 : std_logic;
     end record; 
     type stub_lines_t is array(7 downto 0) of stub_lines_r;
+    
+    type one_cbc_stubs_r is
+    record
+        sync_bit : std_logic;
+        error_flags : std_logic;
+        or254 : std_logic;
+        s_overflow : std_logic;
+        stub1 : std_logic_vector(7 downto 0);
+        bend1 : std_logic_vector(3 downto 0);
+        stub2 : std_logic_vector(7 downto 0);
+        bend2 : std_logic_vector(3 downto 0);
+        stub3 : std_logic_vector(7 downto 0);
+        bend3 : std_logic_vector(3 downto 0);                
+    end record;
+    
+    --== stub data from front-end array (for mutliple hybrids) ==--
     type stub_lines_t_array is array(natural range <>) of stub_lines_t;
     
     --== fast command record ==--
     type cmd_fastbus is
     record
-        fast_reset:         std_logic;
-        trigger:            std_logic;
-        test_pulse_trigger: std_logic;
-        orbit_reset:        std_logic;
+        fast_reset         : std_logic;
+        trigger            : std_logic;
+        test_pulse_trigger : std_logic;
+        orbit_reset        : std_logic;
     end record;
     
     --== triggered data frame record ==--
     type triggered_data_frame_r is
     record
-        start : std_logic_vector(1 downto 0);
-        latency_error : std_logic;
-        buffer_overflow: std_logic;
-        pipe_address : std_logic_vector(8 downto 0);
-        l1_counter: std_logic_vector(8 downto 0);
-        channels: std_logic_vector(253 downto 0);
+        start           : std_logic_vector(1 downto 0);
+        latency_error   : std_logic;
+        buffer_overflow : std_logic;
+        pipe_address    : std_logic_vector(8 downto 0);
+        l1_counter      : std_logic_vector(8 downto 0);
+        channels        : std_logic_vector(253 downto 0);
     end record;
     
     --== triggered data frame record array ==--

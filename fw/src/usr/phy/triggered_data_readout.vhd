@@ -38,7 +38,7 @@ entity triggered_data_readout is
         clk320: in std_logic; -- 320 MHz
         reset_i: in std_logic;
 
-        triggered_data_from_CBC_i: in std_logic;
+        triggered_data_from_fe_i: in std_logic;
         sync_from_CBC_i: in std_logic;
         
         -- output triggered data frame
@@ -79,24 +79,24 @@ begin
                     when IDLE =>
                         -- reset the start bits
                         triggered_data_frame_o <= (start => "00", latency_error => '0', buffer_overflow => '0', pipe_address => (others => '0'), l1_counter => (others => '0'), channels => (others => '0'));
-                        if (sync_from_CBC_i = '1' and triggered_data_from_CBC_i = '1') then
-                            fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_CBC_i;
+                        if (sync_from_CBC_i = '1' and triggered_data_from_fe_i = '1') then
+                            fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_fe_i;
                             nBitsToBeReceived <= 275;
                             state <= CHECK_START;
                         end if;
 
                     when CHECK_START =>
-                        if (nBitsToBeReceived = 275 and triggered_data_from_CBC_i /= '1') then
+                        if (nBitsToBeReceived = 275 and triggered_data_from_fe_i /= '1') then
                             nBitsToBeReceived <= 276;
                             state <= IDLE;
                         else
-                            fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_CBC_i;
+                            fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_fe_i;
                             nBitsToBeReceived <= nBitsToBeReceived - 1;
                             state <= RECEIVING;
                         end if;
 
                     when RECEIVING =>
-                        fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_CBC_i;
+                        fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_fe_i;
                         nBitsToBeReceived <= nBitsToBeReceived - 1;
                         if (nBitsToBeReceived - 1 = 0) then
                             state <= OUTPUT;
@@ -154,10 +154,10 @@ begin
                     triggered_data_frame_o.l1_counter <= fullFrame(290 downto 282);
                     triggered_data_frame_o.channels <= fullFrame(281 downto 28);
                     fullFrame(303 downto 1) <= (others => '0');
-                    fullFrame(0) <= triggered_data_from_CBC_i;
+                    fullFrame(0) <= triggered_data_from_fe_i;
                 else
                     triggered_data_frame_o.start <= "00";
-                    fullFrame <= fullFrame(302 downto 0) & triggered_data_from_CBC_i;
+                    fullFrame <= fullFrame(302 downto 0) & triggered_data_from_fe_i;
                 end if;
 
             end if;
