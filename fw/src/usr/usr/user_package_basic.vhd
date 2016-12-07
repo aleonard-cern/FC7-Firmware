@@ -31,6 +31,8 @@ package user_package is
        cmd_register          : std_logic_vector(7 downto 0);
        -- data to cbc
        cmd_data              : std_logic_vector(7 downto 0);
+       -- register write mask ( to avoid overriding of the current settings )
+       cmd_write_mask        : std_logic_vector(7 downto 0);
     end record;
 
     type cmd_wbus_array is array(natural range <>) of cmd_wbus;

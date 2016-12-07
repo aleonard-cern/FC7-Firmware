@@ -52,7 +52,7 @@ architecture Behavioral of stub_data_readout is
 
     
     
-    type state_t is (SYNCING, WAIT_FOR_NCYCLES, DONE);
+    type state_t is (SYNCING, DONE);
     signal state : state_t := SYNCING;
 
 
@@ -136,7 +136,7 @@ begin
                         -- if or254 is '1' for 10 consecutive times, (could happen if there is a noisy strip)
                         -- then we make sure that sum0 does not count or254 bit, if it would be the case, then sum6
                         -- would count the sync bit and we would have sum6 = "1111111111"                      
-                        if (ten_sync_byte(79 downto 72) = "10000000" or (sum0 = "1111111111" and sum6 /= "1111111111")) then 
+                        if (ten_sync_byte(7 downto 0) = "10000000" or (sum0 = "1111111111" and sum6 /= "1111111111")) then 
                             
                             counter := 8;                -- so we can set the counter to 8 and go to DONE state at next rising edge
                             state <= DONE;                         
@@ -171,7 +171,25 @@ begin
                             or254 := stub_data_from_fe_i.dp5;
                             counter := 5;                         
 
-                        when 5 =>                             
+                        when 5 =>
+                            
+                            -- the reset of the output is done in the midle of the 40MHz cycle --
+                            -- is this necessary ? should we leave the output for the full cycle ? --
+                            -- we could also reset it sooner, after one 320MHz clock cycle and the hybrid block
+                            -- would run at the 320 MHz 
+                            -- need to see with hybrid block what is expected as an input --                         
+                            --== reset output ==--
+                            stub_data_from_fe_o.sync_bit <= '0';
+                            stub_data_from_fe_o.error_flags <= '0';                            
+                            stub_data_from_fe_o.or254 <= '0';
+                            stub_data_from_fe_o.s_overflow <= '0';
+                            stub_data_from_fe_o.stub1 <= (others => '0');
+                            stub_data_from_fe_o.bend1 <= (others => '0');
+                            stub_data_from_fe_o.stub2 <= (others => '0');
+                            stub_data_from_fe_o.bend2 <= (others => '0');
+                            stub_data_from_fe_o.stub3 <= (others => '0');
+                            stub_data_from_fe_o.bend3 <= (others => '0');
+                            
                             stub1(counter - 1) := stub_data_from_fe_i.dp1;
                             stub2(counter - 1) := stub_data_from_fe_i.dp2;
                             stub3(counter - 1) := stub_data_from_fe_i.dp3;
@@ -179,7 +197,7 @@ begin
                             s_overflow := stub_data_from_fe_i.dp5;
                             counter := 4;
 
-                        when 4 =>                             
+                        when 4 =>    
                             stub1(counter - 1) := stub_data_from_fe_i.dp1;
                             stub2(counter - 1) := stub_data_from_fe_i.dp2;
                             stub3(counter - 1) := stub_data_from_fe_i.dp3;
@@ -224,7 +242,21 @@ begin
                             stub_data_from_fe_o.bend2 <= bend2;
                             stub_data_from_fe_o.stub3 <= stub3;                            
                             stub_data_from_fe_o.bend3 <= bend3;
-                                                    
+                                
+                        when others =>
+                                                
+                            --== reset output ==--
+                            stub_data_from_fe_o.sync_bit <= '0';
+                            stub_data_from_fe_o.error_flags <= '0';                            
+                            stub_data_from_fe_o.or254 <= '0';
+                            stub_data_from_fe_o.s_overflow <= '0';
+                            stub_data_from_fe_o.stub1 <= (others => '0');
+                            stub_data_from_fe_o.bend1 <= (others => '0');
+                            stub_data_from_fe_o.stub2 <= (others => '0');
+                            stub_data_from_fe_o.bend2 <= (others => '0');
+                            stub_data_from_fe_o.stub3 <= (others => '0');
+                            stub_data_from_fe_o.bend3 <= (others => '0');
+                                            
                       end case;  
                     
                 end case;

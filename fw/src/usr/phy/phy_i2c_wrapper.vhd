@@ -55,6 +55,7 @@ architecture Behavioral of phy_i2c_wrapper is
     signal page_req: std_logic;
     signal data_req: std_logic_vector(7 downto 0) := x"CD";
     signal rw_req: std_logic := '0';
+    signal mask_req: std_logic_vector(7downto 0) := x"FF";
 
     signal chip_address: std_logic_vector(6 downto 0) := "0000111";
     signal reg_address: std_logic_vector(7 downto 0) := "00000010";
@@ -73,8 +74,10 @@ architecture Behavioral of phy_i2c_wrapper is
     signal master_sda_tri: std_logic := '0';
 
     signal page: std_logic;
+    
+    signal reg_val: std_logic_vector(7 downto 0) := x"00";
 
-    type state_t is (IDLE, READ_CURRENT_PAGE, WAIT_CURRENT_PAGE, WRITE_PAGE, WAIT_FOR_GOOD_PAGE, GOOD_PAGE, WAIT_FOR_DONE, ERROR, SUCCESS);
+    type state_t is (IDLE, READ_CURRENT_PAGE, WAIT_CURRENT_PAGE, WRITE_PAGE, WAIT_FOR_GOOD_PAGE, READ_REG_VALUE, WAIT_CURRENT_REG, GOOD_TO_GO, WAIT_FOR_DONE, ERROR, SUCCESS);
     signal state : state_t := IDLE;
 begin
 
@@ -114,10 +117,31 @@ begin
                     if (valid_o = '1') then
                         reg0 := data_o;
                         if (reg0(7) = page_req) then
-                            state <= GOOD_PAGE;
+                            if (mask_req = x"FF") then
+                                reg_val <= x"00";
+                                state <= GOOD_TO_GO;
+                            else
+                                state <= READ_REG_VALUE;
+                            end if;
                         else
                             state <= WRITE_PAGE;
                         end if;
+                    elsif (error_o = '1') then
+                        state <= ERROR; --need error handling
+                    end if;
+
+                when READ_REG_VALUE =>
+                    en <= '1';
+                    chip_address <= chip_address_req;
+                    reg_address <= reg_address_req;
+                    rw <= '1';
+                    state <= WAIT_CURRENT_REG;
+
+                when WAIT_CURRENT_REG =>
+                    en <= '0';
+                    if (valid_o = '1') then
+                        reg_val <= data_o;
+                        state <= GOOD_TO_GO;
                     elsif (error_o = '1') then
                         state <= ERROR; --need error handling
                     end if;
@@ -133,17 +157,17 @@ begin
                when WAIT_FOR_GOOD_PAGE =>
                     en <= '0';
                     if (valid_o = '1') then
-                        state <= GOOD_PAGE;
+                        state <= GOOD_TO_GO;
                     elsif (error_o = '1') then
                         state <= ERROR; --need error handling
                     end if;
 
-               when GOOD_PAGE =>
+               when GOOD_TO_GO =>
                     en <= '1';
                     chip_address <= chip_address_req;
                     reg_address <= reg_address_req;
                     rw <= rw_req;
-                    data <= data_req;
+                    data <= (data_req and mask_req) or reg_val;
                     state <= WAIT_FOR_DONE;
 
                 when WAIT_FOR_DONE =>
