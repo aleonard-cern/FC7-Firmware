@@ -117,8 +117,7 @@ begin
     
     
     --== triggered data readout block ==--
-    gen_trig_data_readout_hybrid : for I in 1 to NHYBRID generate
-            gen_trig_data_readout_cbc_per_hybrid : for J in 1 to NCBCPERHYBRID generate
+    gen_trig_data_readout : for I in 1 to NHYBRID generate
 
         trigger_data_readout_wrapper_inst : entity work.trigger_data_readout_wrapper
         port map (
@@ -129,11 +128,25 @@ begin
             sync_from_CBC_i => stub_data_i(I),
             trig_data_to_hb_o => trig_data_o(I)
         );
-        end generate gen_trig_data_readout_cbc_per_hybrid; 
 
-    end generate gen_trig_data_readout_hybrid; 
+    end generate gen_trig_data_readout; 
+    
+    
+    --== stub lines block ==--
+    gen_stub_data_readout : for I in 1 to NHYBRID generate
+    
+        stub_data_readout_inst : entity work.stub_data_all_CBCs
+        port map (
+            clk320 => clk_320,
+            reset_i => reset_i,       
+            stub_lines_i =>  stub_data_i(I),
+            cbc_data_to_hb_o => stub_data_o(I)
+        );
+        
+    end generate gen_stub_data_readout;
     
     -- buffers
+    
     
     
 end rtl;
