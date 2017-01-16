@@ -50,9 +50,14 @@ end triggered_data_readout;
 
 architecture FSM of triggered_data_readout is
 
+    -- FMS states
     type state_t is (IDLE, CHECK_START, RECEIVING, OUTPUT);
     signal state : state_t := IDLE;
+    
+    -- temporary triggered data frame
     signal fullFrame: std_logic_vector(275 downto 0) := (others => '0');
+    
+    -- counter for number of bits to be received
     signal nBitsToBeReceived: integer := 276;
 
 begin
@@ -77,28 +82,52 @@ begin
                 case state is
 
                     when IDLE =>
-                        -- reset the start bits
+                    
+                        -- reset the triggered data output frame
                         triggered_data_frame_o <= (start => "00", latency_error => '0', buffer_overflow => '0', pipe_address => (others => '0'), l1_counter => (others => '0'), channels => (others => '0'));
+                       
+                        -- if sync_bit and first start bit are detected simultaneously
                         if (sync_from_CBC_i = '1' and triggered_data_from_fe_i = '1') then
+                        
+                            -- start filling the full frame with first start bit
                             fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_fe_i;
-                            nBitsToBeReceived <= 275;
+                            
+                            -- decrement counter of bit to be received
+                            nBitsToBeReceived <= nBitsToBeReceived - 1;
+                            
+                            -- go to checkt start to confirm the second start bit
                             state <= CHECK_START;
+                            
                         end if;
 
                     when CHECK_START =>
+                    
+                        -- read the second start bit, should be '1' to confirm start sequence 
                         if (nBitsToBeReceived = 275 and triggered_data_from_fe_i /= '1') then
+                            -- the second start bit has not been detected, go back to iddle
                             nBitsToBeReceived <= 276;
                             state <= IDLE;
+                            
                         else
+                            -- the second start bit has been detected, fill the full frame
                             fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_fe_i;
+                            
+                            -- decrement the counter
                             nBitsToBeReceived <= nBitsToBeReceived - 1;
+                            
+                            -- go to receiving state for the rest of the frame
                             state <= RECEIVING;
+                            
                         end if;
 
                     when RECEIVING =>
+                        -- filling the rest of the triggered data frame
                         fullFrame(nBitsToBeReceived - 1) <= triggered_data_from_fe_i;
                         nBitsToBeReceived <= nBitsToBeReceived - 1;
+                        
+                        -- when all the frame has been received
                         if (nBitsToBeReceived - 1 = 0) then
+                            -- go to the output state
                             state <= OUTPUT;
                         end if;
 

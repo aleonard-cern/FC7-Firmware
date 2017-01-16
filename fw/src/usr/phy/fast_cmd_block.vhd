@@ -38,6 +38,7 @@ entity fast_cmd_block is
     port (
         -- clock at 40 MHz for reading input
         clk40:  in std_logic;
+        
         -- clock at 320 MHz for sending output
         clk320: in std_logic;
         
