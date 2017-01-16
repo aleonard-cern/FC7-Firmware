@@ -227,14 +227,43 @@ begin
     --===================================--
     -- Physical interface layer. Connected to: hybrids (40mhz lines + I2C lines), fast commands, FMC 1&2
     --===================================--
-    phy_block: entity work.phy_core;
+    phy_block: entity work.phy_core
     --===================================--
-    --generic map
-    --(
-    --)
-    --port map
-    --(
-    --);        
+    generic map
+    (
+        NHYBRID => 1,
+        NCBCPERHYBRID => 8
+    )
+    port map
+    (
+        clk_40              =>
+        clk_320             =>
+        reset_i             =>
+
+        -- fast command input bus
+        cmd_fast_i          =>
+    
+        -- fast command serial output
+        cmd_fast_o          =>
+
+        -- hybrid block interface for triggered data
+        trig_data_o         =>
+
+        -- hybrid block interface for stub data
+        stub_data_o         =>
+    
+        -- triggered data lines from CBC
+        trig_data_i         =>
+
+        -- stubs lines from CBC
+        stub_data_i         =>
+    
+        -- slow control command from command generator
+        cmd_request_i       =>
+    
+        -- slow control response to command generator
+        cmd_reply_o         => 
+    );        
     --===================================--
     
     --===================================--
