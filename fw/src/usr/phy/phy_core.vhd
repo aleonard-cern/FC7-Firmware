@@ -74,6 +74,8 @@ end phy_core;
 architecture rtl of phy_core is
 
     signal dummy_signal             : std_logic := '0';
+    signal cmd_request              : cmd_wbus_array(1 to NHYBRID);
+    signal cmd_reply                : cmd_rbus_array(1 to NHYBRID);
 
 begin
 
@@ -90,6 +92,28 @@ begin
     );
 
     --== slow control block ==--
+    -- muxdemux to select which hybrid is concerned
+    slow_control_muxdemux_inst : entity work.slow_control_muxdemux
+    port map (
+        clk => clk_40,
+        reset_i => clk_40,
+        cmd_request_i => cmd_request_i,
+        cmd_request_o => cmd_request,
+        cmd_reply_i => cmd_reply,
+        cmd_reply_o => cmd_reply_o
+    );
+    
+    -- i2c master cores for the NHYBRIDS
+    gen_i2c: for I in 1 to NHYBRID generate
+        phy_i2c_wrapper_inst : entity work.phy_i2c_wrapper
+        port map (
+            clk => clk_40,
+            reset => reset_i,
+            cmd_request => cmd_request(I),
+            cmd_reply => cmd_reply(I)
+        );
+    end generate gen_i2c;
+    
     
     -- buffers
     

@@ -31,19 +31,19 @@ use IEEE.NUMERIC_STD.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-use work.ipbus.ALL;
+use work.user_package.ALL;
 
 entity slow_control_muxdemux is
     generic (
         NHYBRID : integer := 32
     );
     port (
-        clk: in std_logic;
-        reset_i: std_logic;
-        ipb_request_i: in ipb_wbus;
-        ipb_request_o: out ipb_wbus_array(1 to NHYBRID);
-        ipb_reply_i: in ipb_rbus_array(1 to NHYBRID);
-        ipb_reply_o: out ipb_rbus
+        clk            : in std_logic;
+        reset_i        : in std_logic;
+        cmd_request_i  : in cmd_wbus;
+        cmd_request_o  : out cmd_wbus_array(1 to NHYBRID);
+        cmd_reply_i    : in cmd_rbus_array(1 to NHYBRID);
+        cmd_reply_o    : out cmd_rbus
     );
 end slow_control_muxdemux;
 
@@ -65,8 +65,8 @@ begin
             if (reset_i = '1') then
 
                 -- reset all output requests, reply, counter, state and sel
-                ipb_request_o <= (others => (ipb_addr => (others => '0'), ipb_wdata => (others => '0'), ipb_strobe => '0', ipb_write => '0'));
-                ipb_reply_o <= (ipb_rdata => (others => '0'), ipb_ack => '0', ipb_err => '0');
+                cmd_request_o <= (others => (cmd_strobe => '0', cmd_hybrid_id => (others => '0'), cmd_chip_id => (others => '0'), cmd_page => '0', cmd_read => '0', cmd_register => (others => '0'), cmd_data => (others => '0'), cmd_write_mask => (others => '0')));
+                cmd_reply_o <= (cmd_strobe => '0', cmd_data => (others => '0'), cmd_err => '0');
                 timeout <= (others => '0');
                 state <= IDLE;
                 sel := 0;
@@ -78,19 +78,19 @@ begin
                     when IDLE =>
 
                         -- reset all output requests
-                        ipb_request_o <= (others => (ipb_addr => (others => '0'), ipb_wdata => (others => '0'), ipb_strobe => '0', ipb_write => '0'));
+                        cmd_request_o <= (others => (cmd_strobe => '0', cmd_hybrid_id => (others => '0'), cmd_chip_id => (others => '0'), cmd_page => '0', cmd_read => '0', cmd_register => (others => '0'), cmd_data => (others => '0'), cmd_write_mask => (others => '0')));
 
                         -- When strobe detected
-                        if (ipb_request_i.ipb_strobe = '1') then
+                        if (cmd_request_i.cmd_strobe = '1') then
 
                             -- Set timeout
                             timeout <= to_unsigned(SC_TIMEOUT - 4, 32);
 
                             -- Get hybrid number from addr
-                            sel := to_integer(unsigned(ipb_request_i.ipb_addr(31 downto 19)));
+                            sel := to_integer(unsigned(cmd_request_i.cmd_hybrid_id));
 
                             -- Forward request to selected bus
-                            ipb_request_o(sel) <= ipb_request_i;
+                            cmd_request_o(sel) <= cmd_request_i;
 
                             -- Go to ACK state
                             state <= ACK;
@@ -101,13 +101,13 @@ begin
                     when ACK =>
 
                         -- reset output strobe
-                        ipb_request_o(sel).ipb_strobe <= '0';
+                        cmd_request_o(sel).cmd_strobe <= '0';
 
                         -- when timeout is reached
                         if (timeout = 0) then
 
                             -- send SC_TIMEOUT_ERROR with err bit high
-                            ipb_reply_o <= (ipb_rdata => SC_TIMEOUT_ERROR, ipb_ack => '1', ipb_err => '1');
+                            cmd_reply_o <= (cmd_strobe => '1', cmd_data => SC_TIMEOUT_ERROR, cmd_err => '1');
 
                             -- Go to IDLE state
                             state <= IDLE;
@@ -118,8 +118,8 @@ begin
                             timeout <= timeout - 1;
 
                             -- When acknoledge received, forward the reply to command processor
-                            if (ipb_reply_i(sel).ipb_ack = '1') then
-                                ipb_reply_o <= ipb_reply_i(sel);
+                            if (cmd_reply_i(sel).cmd_strobe = '1') then
+                                cmd_reply_o <= cmd_reply_i(sel);
 
                                 -- and go to IDLE state
                                 state <= IDLE;
