@@ -35,7 +35,8 @@ use work.user_package.ALL;
 
 entity phy_core is
     generic(
-        constant NHYBRID: natural range 1 to 32
+        constant NHYBRID       : natural range 1 to 32;
+        constant NCBCPERHYBRID : natural range 1 to 8
     );
     port (
     
@@ -59,7 +60,7 @@ entity phy_core is
         trig_data_i         : in trig_data_from_fe_t_array(1 to NHYBRID);
     
         -- stubs lines from CBC
-        stub_data_i         : in stub_lines_r_array(1 to NHYBRID);
+        stub_data_i         : in stub_lines_r_array_array(1 to NHYBRID);
         
         -- slow control command from command generator
         cmd_request_i       : in cmd_wbus;
@@ -114,6 +115,23 @@ begin
         );
     end generate gen_i2c;
     
+    
+    --== triggered data readout block ==--
+    gen_trig_data_readout_hybrid : for I in 1 to NHYBRID generate
+            gen_trig_data_readout_cbc_per_hybrid : for J in 1 to NCBCPERHYBRID generate
+
+        trigger_data_readout_wrapper_inst : entity work.trigger_data_readout_wrapper
+        port map (
+            clk320 => clk_320,
+            clk40 => clk_40,
+            reset_i => reset_i,
+            triggered_data_from_fe_i => trig_data_i(I),
+            sync_from_CBC_i => stub_data_i(I),
+            trig_data_to_hb_o => trig_data_o(I)
+        );
+        end generate gen_trig_data_readout_cbc_per_hybrid; 
+
+    end generate gen_trig_data_readout_hybrid; 
     
     -- buffers
     

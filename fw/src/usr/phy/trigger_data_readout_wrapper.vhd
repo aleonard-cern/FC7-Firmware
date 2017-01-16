@@ -39,15 +39,14 @@ entity trigger_data_readout_wrapper is
      clk40 : in std_logic;
      reset_i : in std_logic;
      triggered_data_from_fe_i : in trig_data_from_fe_t;
-     sync_from_CBC_i: in std_logic_vector(7 downto 0);
+     sync_from_CBC_i: in stub_lines_r_array;
      trig_data_to_hb_o : out trig_data_to_hb_t
   );
 end trigger_data_readout_wrapper;
 
 architecture Structural of trigger_data_readout_wrapper is
 
-signal triggered_data_frame: triggered_data_frame_r_array;
-
+    signal triggered_data_frame: triggered_data_frame_r_array;
 
 begin
 
@@ -59,7 +58,7 @@ begin
              clk320 => clk320,
              reset_i => reset_i,
              triggered_data_from_fe_i => triggered_data_from_fe_i(I),
-             sync_from_CBC_i => sync_from_CBC_i(I),
+             sync_from_CBC_i => sync_from_CBC_i(I).dp5,
              triggered_data_frame_o => triggered_data_frame(I)   
         );  
     end generate CBCs;
