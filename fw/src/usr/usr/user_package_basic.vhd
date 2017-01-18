@@ -54,7 +54,7 @@ package user_package is
     type trig_data_to_hb_t_array is array(natural range <>) of trig_data_to_hb_t;
     
     --== triggered data from front-end ==--
-    subtype trig_data_from_fe_t is std_logic_vector(7 downto 0);
+    subtype trig_data_from_fe_t is std_logic_vector(NCBC_PER_HYBRID - 1 downto 0);
     type trig_data_from_fe_t_array is array(natural range <>) of trig_data_from_fe_t;
 
     
@@ -71,7 +71,7 @@ package user_package is
         dp4 : std_logic;
         dp5 : std_logic;
     end record; 
-    type stub_lines_r_array is array(7 downto 0) of stub_lines_r;
+    type stub_lines_r_array is array(NCBC_PER_HYBRID - 1 downto 0) of stub_lines_r;
     
         --== stub data from front-end array (for mutliple hybrids) ==--
     type stub_lines_r_array_array is array(natural range <>) of stub_lines_r_array;
@@ -118,7 +118,7 @@ package user_package is
     end record;
     
     --== triggered data frame record array ==--
-    type triggered_data_frame_r_array is array (7 downto 0) of triggered_data_frame_r;
+    type triggered_data_frame_r_array is array (NCBC_PER_HYBRID - 1 downto 0) of triggered_data_frame_r;
     
 end user_package;
    

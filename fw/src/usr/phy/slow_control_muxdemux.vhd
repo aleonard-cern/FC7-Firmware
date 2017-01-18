@@ -34,15 +34,15 @@ use IEEE.NUMERIC_STD.ALL;
 use work.user_package.ALL;
 
 entity slow_control_muxdemux is
-    generic (
-        NHYBRID : integer := 32
+    generic(
+        constant NUM_HYBRID       : natural range 1 to 32
     );
     port (
         clk            : in std_logic;
         reset_i        : in std_logic;
         cmd_request_i  : in cmd_wbus;
-        cmd_request_o  : out cmd_wbus_array(1 to NHYBRID);
-        cmd_reply_i    : in cmd_rbus_array(1 to NHYBRID);
+        cmd_request_o  : out cmd_wbus_array(1 to NUM_HYBRID);
+        cmd_reply_i    : in cmd_rbus_array(1 to NUM_HYBRID);
         cmd_reply_o    : out cmd_rbus
     );
 end slow_control_muxdemux;
@@ -53,13 +53,13 @@ architecture Behavioral of slow_control_muxdemux is
     signal state : state_t := IDLE;
     signal timeout: unsigned(31 downto 0) := (others => '0');
     constant SC_TIMEOUT         : integer := 200_000;
-    constant SC_TIMEOUT_ERROR : std_logic_vector(31 downto 0) := x"EEEEEEEE";
+    constant SC_TIMEOUT_ERROR : std_logic_vector(7 downto 0) := x"EE";
 
 begin
 
 
     process(clk)
-        variable sel : integer range 0 to NHYBRID;
+        variable sel : natural range 1 to NUM_HYBRID;
     begin
         if (rising_edge(clk)) then
             if (reset_i = '1') then
@@ -69,7 +69,7 @@ begin
                 cmd_reply_o <= (cmd_strobe => '0', cmd_data => (others => '0'), cmd_err => '0');
                 timeout <= (others => '0');
                 state <= IDLE;
-                sel := 0;
+                sel := 1;
 
             else
                 case state is
@@ -87,7 +87,7 @@ begin
                             timeout <= to_unsigned(SC_TIMEOUT - 4, 32);
 
                             -- Get hybrid number from addr
-                            sel := to_integer(unsigned(cmd_request_i.cmd_hybrid_id));
+                            sel := to_integer(unsigned(cmd_request_i.cmd_hybrid_id)) + 1;
 
                             -- Forward request to selected bus
                             cmd_request_o(sel) <= cmd_request_i;

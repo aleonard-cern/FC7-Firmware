@@ -1,7 +1,7 @@
 ########################################################
 set_property IOSTANDARD LVDS_25                [get_ports fabric_clk_p]
 set_property PACKAGE_PIN AK18                  [get_ports fabric_clk_p]
-create_clock -period 24.000 -name fabric_clk   [get_ports fabric_clk_p]
+create_clock -period 25.000 -name fabric_clk   [get_ports fabric_clk_p]
 ########################################################
 set_clock_groups -asynchronous \
     -group [get_clocks -include_generated_clocks eth_txoutclk] \

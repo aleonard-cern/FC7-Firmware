@@ -35,8 +35,8 @@ use work.user_package.ALL;
 
 entity phy_core is
     generic(
-        constant NHYBRID       : natural range 1 to 32;
-        constant NCBCPERHYBRID : natural range 1 to 8
+        constant NUM_HYBRID       : natural range 1 to 32;
+        constant NCBC_PER_HYBRID : natural range 1 to 8
     );
     port (
     
@@ -51,16 +51,16 @@ entity phy_core is
         cmd_fast_o          : out std_logic;
     
         -- hybrid block interface for triggered data
-        trig_data_o         : out trig_data_to_hb_t_array(1 to NHYBRID);
+        trig_data_o         : out trig_data_to_hb_t_array(1 to NUM_HYBRID);
     
         -- hybrid block interface for stub data
-        stub_data_o         : out stub_data_to_hb_t_array(1 to NHYBRID);
+        stub_data_o         : out stub_data_to_hb_t_array(1 to NUM_HYBRID);
         
         -- triggered data lines from CBC
-        trig_data_i         : in trig_data_from_fe_t_array(1 to NHYBRID);
+        trig_data_i         : in trig_data_from_fe_t_array(1 to NUM_HYBRID);
     
         -- stubs lines from CBC
-        stub_data_i         : in stub_lines_r_array_array(1 to NHYBRID);
+        stub_data_i         : in stub_lines_r_array_array(1 to NUM_HYBRID);
         
         -- slow control command from command generator
         cmd_request_i       : in cmd_wbus;
@@ -75,8 +75,8 @@ end phy_core;
 architecture rtl of phy_core is
 
     signal dummy_signal             : std_logic := '0';
-    signal cmd_request              : cmd_wbus_array(1 to NHYBRID);
-    signal cmd_reply                : cmd_rbus_array(1 to NHYBRID);
+    signal cmd_request              : cmd_wbus_array(1 to NUM_HYBRID);
+    signal cmd_reply                : cmd_rbus_array(1 to NUM_HYBRID);
 
 begin
 
@@ -95,9 +95,12 @@ begin
     --== slow control block ==--
     -- muxdemux to select which hybrid is concerned
     slow_control_muxdemux_inst : entity work.slow_control_muxdemux
+    generic map (
+        NHYBRID => NUM_HYBRID
+    )
     port map (
         clk => clk_40,
-        reset_i => clk_40,
+        reset_i => '0',
         cmd_request_i => cmd_request_i,
         cmd_request_o => cmd_request,
         cmd_reply_i => cmd_reply,
@@ -105,7 +108,7 @@ begin
     );
     
     -- i2c master cores for the NHYBRIDS
-    gen_i2c: for I in 1 to NHYBRID generate
+    gen_i2c: for I in 1 to NUM_HYBRID generate
         phy_i2c_wrapper_inst : entity work.phy_i2c_wrapper
         port map (
             clk => clk_40,
@@ -117,7 +120,7 @@ begin
     
     
     --== triggered data readout block ==--
-    gen_trig_data_readout : for I in 1 to NHYBRID generate
+    gen_trig_data_readout : for I in 1 to NUM_HYBRID generate
 
         trigger_data_readout_wrapper_inst : entity work.trigger_data_readout_wrapper
         port map (
@@ -133,7 +136,7 @@ begin
     
     
     --== stub lines block ==--
-    gen_stub_data_readout : for I in 1 to NHYBRID generate
+    gen_stub_data_readout : for I in 1 to NUM_HYBRID generate
     
         stub_data_readout_inst : entity work.stub_data_all_CBCs
         port map (

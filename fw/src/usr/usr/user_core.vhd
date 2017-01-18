@@ -158,6 +158,14 @@ architecture usr of user_core is
     signal fabric_clk_pre_buf       : std_logic;                
     signal fabric_clk               : std_logic;
     --===================================--
+    
+    signal clk_40MHz : std_logic;
+    signal clk_320MHz : std_logic;
+    
+    signal cmd_reply : cmd_rbus;
+    signal stub_to_hb : stub_data_to_hb_t_array(1 to NUM_HYBRIDS);
+    signal trig_data_to_hb : trig_data_to_hb_t_array(1 to NUM_HYBRIDS);
+    signal fast_command_to_phy : cmd_fastbus;
 
 begin
 
@@ -227,43 +235,63 @@ begin
     --===================================--
     -- Physical interface layer. Connected to: hybrids (40mhz lines + I2C lines), fast commands, FMC 1&2
     --===================================--
+    -- temporary mmcm for 320 and 40 MHz clocks
+    mmcm_inst : entity work.mmcm
+    port map ( 
+    
+       -- Clock in ports
+       clk_in1 => fabric_clk,
+      -- Clock out ports  
+       clk_out1 => clk_40MHz,
+       clk_out2 => clk_320MHz,
+      -- Status and control signals                
+       reset => '0',
+       locked => open            
+    );
+     
+     
+     
     phy_block: entity work.phy_core
     --===================================--
     generic map
     (
-        NHYBRID => 1,
-        NCBCPERHYBRID => 8
+        NUM_HYBRID => NUM_HYBRIDS,
+        NCBC_PER_HYBRID => 8
     )
     port map
     (
-        clk_40              =>
-        clk_320             =>
-        reset_i             =>
+        clk_40              => clk_40MHz,
+        clk_320             => clk_320MHz,
+        reset_i             => '0',
 
         -- fast command input bus
-        cmd_fast_i          =>
+        cmd_fast_i          => fast_command_to_phy,
     
         -- fast command serial output
-        cmd_fast_o          =>
+        cmd_fast_o          => fmc_l8_la_p(23),
 
         -- hybrid block interface for triggered data
-        trig_data_o         =>
+        trig_data_o         => trig_data_to_hb,
 
         -- hybrid block interface for stub data
-        stub_data_o         =>
+        stub_data_o         => stub_to_hb,
     
         -- triggered data lines from CBC
-        trig_data_i         =>
+        trig_data_i         => (others => (others => '1')),
 
         -- stubs lines from CBC
-        stub_data_i         =>
+        stub_data_i         => (others => (others => (dp1 => '1', dp2 => '1', dp3 => '1', dp4 => '1', dp5 => '1'))),
     
         -- slow control command from command generator
-        cmd_request_i       =>
+        cmd_request_i       => (cmd_strobe => '0', cmd_hybrid_id => (others => '0'), cmd_chip_id => (others => '0'), cmd_page => '0', cmd_read => '0', cmd_register => (others => '0'), cmd_data => (others => '0'), cmd_write_mask => (others => '0')),
     
         -- slow control response to command generator
-        cmd_reply_o         => 
+        cmd_reply_o         => cmd_reply
     );        
+    
+    fmc_l8_la_p(33) <= cmd_reply.cmd_strobe;
+    fmc_l8_la_p(32 downto 25) <= cmd_reply.cmd_data;
+    fmc_l8_la_p(24) <= cmd_reply.cmd_err;
     --===================================--
     
     --===================================--
