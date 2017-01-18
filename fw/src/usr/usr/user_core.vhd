@@ -262,6 +262,7 @@ begin
     (
         clk_40              => clk_40MHz,
         clk_320             => clk_320MHz,
+        
         reset_i             => '0',
 
         -- fast command input bus
