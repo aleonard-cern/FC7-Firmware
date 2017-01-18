@@ -325,7 +325,7 @@ begin
                             -- If the slave acknowledged
                             if (sda_miso_i = '0') then
                                 -- Set the chip address and data counters
-                                chip_address_cnt <= 7;
+                                chip_address_cnt <= 6;
                                 data_cnt <= 7;
                                 -- Go to read or write states
                                 case rw_n is

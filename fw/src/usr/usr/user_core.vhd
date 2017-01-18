@@ -261,8 +261,8 @@ begin
     port map
     (
         clk_40              => clk_40MHz,
-        clk_320             => clk_320MHz,
-        
+        clk_320_i             => clk_320MHz,
+        clk_320_o           => open,
         reset_i             => '0',
 
         -- fast command input bus

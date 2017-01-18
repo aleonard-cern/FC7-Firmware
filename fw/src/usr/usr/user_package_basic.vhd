@@ -12,7 +12,7 @@ package user_package is
 	constant user_ipb_ctrl_regs		: integer  := 1 ;
 
 
-    constant NCBC_PER_HYBRID : natural := 8;
+    constant NCBC_PER_HYBRID : natural := 1;
 
     --=== slow control records ===--
     -- The signals going from master to slaves

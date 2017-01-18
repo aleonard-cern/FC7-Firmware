@@ -41,7 +41,8 @@ entity phy_core is
     port (
     
         clk_40              : in std_logic;
-        clk_320             : in std_logic;
+        clk_320_i           : in std_logic;
+        clk_320_o           : out std_logic;
         reset_i             : in std_logic;
     
         -- fast command input bus
@@ -80,13 +81,14 @@ architecture rtl of phy_core is
 
 begin
 
+    clk_320_o <= clk_320_i;
     dummy_signal <= '1';
     
     --== fast command block ==--
     fast_cmd_inst: entity work.fast_cmd_block
     port map (
         clk40 => clk_40,
-        clk320 => clk_320,
+        clk320 => clk_320_i,
         reset_i => reset_i,
         fast_cmd_i => cmd_fast_i,
         fast_cmd_o => cmd_fast_o
@@ -96,7 +98,7 @@ begin
     -- muxdemux to select which hybrid is concerned
     slow_control_muxdemux_inst : entity work.slow_control_muxdemux
     generic map (
-        NHYBRID => NUM_HYBRID
+        NUM_HYBRID => NUM_HYBRID
     )
     port map (
         clk => clk_40,
@@ -120,33 +122,33 @@ begin
     
     
     --== triggered data readout block ==--
-    gen_trig_data_readout : for I in 1 to NUM_HYBRID generate
+    --gen_trig_data_readout : for I in 1 to NUM_HYBRID generate
 
         trigger_data_readout_wrapper_inst : entity work.trigger_data_readout_wrapper
         port map (
-            clk320 => clk_320,
+            clk320 => clk_320_i,
             clk40 => clk_40,
             reset_i => reset_i,
-            triggered_data_from_fe_i => trig_data_i(I),
-            sync_from_CBC_i => stub_data_i(I),
-            trig_data_to_hb_o => trig_data_o(I)
+            triggered_data_from_fe_i => trig_data_i(1),
+            sync_from_CBC_i => stub_data_i(1),
+            trig_data_to_hb_o => trig_data_o(1)
         );
 
-    end generate gen_trig_data_readout; 
+    --end generate gen_trig_data_readout; 
     
     
     --== stub lines block ==--
-    gen_stub_data_readout : for I in 1 to NUM_HYBRID generate
-    
+    --gen_stub_data_readout : for I in 1 to 1 generate
+    --begin
         stub_data_readout_inst : entity work.stub_data_all_CBCs
         port map (
-            clk320 => clk_320,
+            clk320 => clk_320_i,
             reset_i => reset_i,       
-            stub_lines_i =>  stub_data_i(I),
-            cbc_data_to_hb_o => stub_data_o(I)
+            stub_lines_i =>  stub_data_i(1),
+            cbc_data_to_hb_o => stub_data_o(1)
         );
         
-    end generate gen_stub_data_readout;
+    --end generate gen_stub_data_readout;
     
     -- buffers
     
