@@ -34,6 +34,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use work.user_package.ALL;
 
 entity triggered_data_all_CBCs is
+
 Port ( 
     clk40 : in std_logic;
     clk320 : in std_logic;
@@ -47,7 +48,7 @@ architecture Behavioral of triggered_data_all_CBCs is
     type trig_data_to_hb_t_array is array (15 downto 0) of trig_data_to_hb_t;
     signal trig_data_tmp : trig_data_to_hb_t_array := (others => (others=>'0')); 
     signal is_sent : std_logic :='0';
-    signal CBC_flag : std_logic_vector(7 downto 0) := (others=>'0');
+    signal CBC_flag : std_logic_vector(NCBC_PER_HYBRID - 1 downto 0) := (others=>'0');
       
 begin
 
@@ -57,7 +58,7 @@ begin
         -- variable for current and previous 40MHz clock states 
         variable previous_clk : std_logic := '0'; 
         variable current_clk : std_logic := '0';
-        
+        constant flag_ones : std_logic_vector(NCBC_PER_HYBRID - 1 downto 0) := (others => '1'); 
         -- dummy nul vector for reseting output
         constant dummy : trig_data_to_hb_t := (others =>'0');
         
@@ -96,7 +97,7 @@ begin
                                                       
                            CBC_flag(I) <= '1';
                            
-                    elsif (CBC_flag = x"FF" and is_sent = '1') then
+                    elsif (CBC_flag = flag_ones and is_sent = '1') then
                            CBC_flag(I) <= '0';
                            
                     end if;
@@ -108,14 +109,14 @@ begin
                 
                     -- if all CBC have sent triggered data (CBC_flag == ff) and there are still data to be sent
                     --if(CBC_flag = x"FF" and trig_data_tmp(0) /= dummy) then
-                    if(CBC_flag = x"FF" and cycle_for_sending >= -1) then
+                    if(CBC_flag = flag_ones and cycle_for_sending > -1) then
                     
                         trig_data_to_hb_o <= trig_data_tmp(15 - cycle_for_sending);
                         --trig_data_tmp <= dummy & trig_data_tmp(15 downto 1);
                         cycle_for_sending := cycle_for_sending - 1;
                         
                     --elsif (CBC_flag=x"FF" and trig_data_tmp(0)=dummy) then
-                    elsif (CBC_flag=x"FF" and cycle_for_sending = -1) then
+                    elsif (CBC_flag=flag_ones and cycle_for_sending = -1) then
                         trig_data_to_hb_o <= dummy;
                         trig_data_tmp <= (others => (others=>'0')); 
                         is_sent <= '1';

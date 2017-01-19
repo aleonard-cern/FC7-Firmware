@@ -163,7 +163,7 @@ architecture usr of user_core is
     signal clk_320MHz : std_logic;
     
     signal cmd_reply : cmd_rbus;
-    signal stub_to_hb : stub_data_to_hb_t_array(1 to NUM_HYBRIDS);
+    signal stub_to_hb : stub_data_to_hb_t_array(1 to 2);
     signal trig_data_to_hb : trig_data_to_hb_t_array(1 to NUM_HYBRIDS);
     signal fast_command_to_phy : cmd_fastbus;
 
@@ -255,13 +255,12 @@ begin
     --===================================--
     generic map
     (
-        NUM_HYBRID => NUM_HYBRIDS,
-        NCBC_PER_HYBRID => 8
+        NUM_HYBRID => NUM_HYBRIDS
     )
     port map
     (
         clk_40              => clk_40MHz,
-        clk_320_i             => clk_320MHz,
+        clk_320_i           => clk_320MHz,
         clk_320_o           => open,
         reset_i             => '0',
 

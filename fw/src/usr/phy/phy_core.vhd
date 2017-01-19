@@ -35,8 +35,7 @@ use work.user_package.ALL;
 
 entity phy_core is
     generic(
-        constant NUM_HYBRID       : natural range 1 to 32;
-        constant NCBC_PER_HYBRID : natural range 1 to 8
+        constant NUM_HYBRID       : natural range 1 to 32
     );
     port (
     
@@ -110,20 +109,19 @@ begin
     );
     
     -- i2c master cores for the NHYBRIDS
-    gen_i2c: for I in 1 to NUM_HYBRID generate
+    --gen_i2c: for index in 1 to NUM_HYBRID generate
         phy_i2c_wrapper_inst : entity work.phy_i2c_wrapper
         port map (
             clk => clk_40,
             reset => reset_i,
-            cmd_request => cmd_request(I),
-            cmd_reply => cmd_reply(I)
+            cmd_request => cmd_request(1),
+            cmd_reply => cmd_reply(1)
         );
-    end generate gen_i2c;
+    --end generate gen_i2c;
     
     
     --== triggered data readout block ==--
-    --gen_trig_data_readout : for I in 1 to NUM_HYBRID generate
-
+    --gen_trig_data_readout : for index in 1 to NUM_HYBRID generate
         trigger_data_readout_wrapper_inst : entity work.trigger_data_readout_wrapper
         port map (
             clk320 => clk_320_i,
@@ -133,21 +131,18 @@ begin
             sync_from_CBC_i => stub_data_i(1),
             trig_data_to_hb_o => trig_data_o(1)
         );
-
     --end generate gen_trig_data_readout; 
     
     
     --== stub lines block ==--
-    --gen_stub_data_readout : for I in 1 to 1 generate
-    --begin
-        stub_data_readout_inst : entity work.stub_data_all_CBCs
+    --gen_stub_data_readout : for index in 1 to NUM_HYBRID generate
+       stub_data_readout_inst : entity work.stub_data_all_CBCs
         port map (
             clk320 => clk_320_i,
             reset_i => reset_i,       
             stub_lines_i =>  stub_data_i(1),
             cbc_data_to_hb_o => stub_data_o(1)
         );
-        
     --end generate gen_stub_data_readout;
     
     -- buffers
