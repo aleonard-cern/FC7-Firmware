@@ -90,7 +90,7 @@ architecture Behavioral of phy_i2c_master is
 
     --== State machine ==--
 
-    type state_t is (IDLE, START, CHIP_ADDR, REG_ADDR, RW, WAIT_CHIP_ADDR_ACK, CHIP_ADDR_ACK, WAIT_REG_ADDR_ACK, REG_ADDR_ACK, ENDING_WR_FOR_RD, STOP_FOR_RD, START_RD, RD, RD_ACK, RST_1, ENDING_RD, WR, RST_2, ACK_2, ENDING_WR, STOP, ERROR);
+    type state_t is (IDLE, START, SEND_START, CHIP_ADDR, REG_ADDR, RW, WAIT_CHIP_ADDR_ACK, CHIP_ADDR_ACK, WAIT_REG_ADDR_ACK, REG_ADDR_ACK, ENDING_WR_FOR_RD, STOP_FOR_RD, START_RD, RD, RD_ACK, RST_1, ENDING_RD, WR, RST_2, ACK_2, ENDING_WR, STOP, ERROR);
 
     signal state        : state_t;
 
@@ -170,6 +170,7 @@ begin
     --=========--
 
     process(ref_clk_i)
+        variable delay : integer := 5;
     begin
         if (rising_edge(ref_clk_i)) then
             -- Reset & default values
@@ -215,6 +216,13 @@ begin
                     -- Create a start condition
                     when START =>
                         clk_en <= '1';
+                        delay := delay - 1;
+                        if (delay = 0) then
+                            state <= SEND_START;
+                            delay := 5;
+                        end if;
+                        
+                    when SEND_START =>
                         -- On a high clock, put data low
                         if (high_clk = '1') then
                             -- Master controls the line

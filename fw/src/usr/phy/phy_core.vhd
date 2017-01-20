@@ -66,8 +66,12 @@ entity phy_core is
         cmd_request_i       : in cmd_wbus;
         
         -- slow control response to command generator
-        cmd_reply_o         : out cmd_rbus 
+        cmd_reply_o         : out cmd_rbus;
         
+        scl_io              : inout std_logic;
+        sda_io              : inout std_logic
+        --i2c_mosi            : out std_logic;
+        --i2c_miso            : in std_logic
         
     );
 end phy_core;
@@ -77,7 +81,15 @@ architecture rtl of phy_core is
     signal dummy_signal             : std_logic := '0';
     signal cmd_request              : cmd_wbus_array(1 to NUM_HYBRID);
     signal cmd_reply                : cmd_rbus_array(1 to NUM_HYBRID);
+    signal scl                      : std_logic := '1';
+    signal sda                      : std_logic := '1';
 
+    signal sda_mosi : std_logic := '1';
+    signal sda_miso : std_logic := '1';
+    signal sda_tri : std_logic := '1';
+    signal cbc_dp_to_buf : cbc_dp_to_buf_array(1 to 1) := (others => (others => '0'));
+    signal fast_cmd : std_logic;
+    
 begin
 
     clk_320_o <= clk_320_i;
@@ -90,7 +102,7 @@ begin
         clk320 => clk_320_i,
         reset_i => reset_i,
         fast_cmd_i => cmd_fast_i,
-        fast_cmd_o => cmd_fast_o
+        fast_cmd_o => fast_cmd
     );
 
     --== slow control block ==--
@@ -115,7 +127,14 @@ begin
             clk => clk_40,
             reset => reset_i,
             cmd_request => cmd_request(1),
-            cmd_reply => cmd_reply(1)
+            cmd_reply => cmd_reply(1),
+            
+            scl => scl,
+            sda => sda,
+        
+            sda_miso_to_master => sda_miso,
+            sda_mosi_to_slave => sda_mosi,
+            master_sda_tri => sda_tri
         );
     --end generate gen_i2c;
     
@@ -146,7 +165,38 @@ begin
     --end generate gen_stub_data_readout;
     
     -- buffers
+    buffers_inst : entity work.buffers
+      generic map (
+        NCBC_PER_HYBRID => NCBC_PER_HYBRID
+      )
+      Port map (       
+        CBC_dp_p_i => cbc_dp_to_buf,
+        CBC_dp_n_i => cbc_dp_to_buf,
+        
+        CBC_dp_o => open,
+        
+        clk320_p_o  => open,
+        clk320_n_o  => open,
+        clk320_i    => '0',
+        
+        fast_cmd_p_o     => cmd_fast_o,
+        fast_cmd_n_o     => open,
+        fast_cmd_i       => fast_cmd,   
     
+        reset_o          => open,
+        reset_i          => '0',
+        
+        SCL_i  => scl,   
+        --SCL_o            : out std_logic; only the master drives the scl clock right now
+        SCL_io => scl_io,
+           
+        SDA_io => sda_io,
+        SDA_mosi_i => sda_mosi,
+        SDA_miso_o => sda_miso,
+        SDA_tri_i => sda_tri
+
+        
+      );
     
     
 end rtl;

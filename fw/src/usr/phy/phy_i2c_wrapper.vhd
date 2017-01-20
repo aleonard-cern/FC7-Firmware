@@ -40,9 +40,16 @@ entity phy_i2c_wrapper is
     reset: in std_logic;
 
     cmd_request: in cmd_wbus;
-    cmd_reply: out cmd_rbus
+    cmd_reply: out cmd_rbus;
+    
+    scl : inout std_logic;
+    sda : inout std_logic;
 
-  );
+    sda_miso_to_master : in std_logic ;
+    sda_mosi_to_slave : out std_logic ;
+    master_sda_tri : out std_logic
+     
+);
 
 end phy_i2c_wrapper;
 
@@ -66,12 +73,7 @@ architecture Behavioral of phy_i2c_wrapper is
     signal error_o: std_logic := '0';
     signal data_o: std_logic_vector(7 downto 0) := (others => '0');
 
-    signal scl: std_logic;
-    signal sda: std_logic;
-
-    signal sda_miso_to_master: std_logic := '1';
-    signal sda_mosi_to_slave: std_logic := '1';
-    signal master_sda_tri: std_logic := '0';
+    signal cmd_rbus_tmp: cmd_rbus := (cmd_strobe => '0', cmd_data => (others => '0'), cmd_err => '0');
 
     signal page: std_logic;
     
@@ -81,21 +83,36 @@ architecture Behavioral of phy_i2c_wrapper is
     signal state : state_t := IDLE;
 begin
 
-
+    cmd_reply <= cmd_rbus_tmp;
     process(clk, reset)
         variable reg0 : std_logic_vector(7 downto 0) := (others => '0');
 
     begin
         if (reset = '1') then
+        
+            cmd_rbus_tmp.cmd_strobe <= '0';
+            cmd_rbus_tmp.cmd_data <= x"00";
+            cmd_rbus_tmp.cmd_err <= '0';
+            
+            chip_address_req <= (others => '0'); -- need a mapping between CBC id and CBC chip address
+            rw_req <= '0';
+            page_req <= '0';
+            reg_address_req <= (others => '0');
+            data_req <= (others => '0');
 
+            state <= IDLE;
+            
         elsif (rising_edge(clk)) then
 
             case state is
                 when IDLE =>
+                    cmd_rbus_tmp.cmd_strobe <= '0';
+                    cmd_rbus_tmp.cmd_data <= x"00";
+                    cmd_rbus_tmp.cmd_err <= '0'; 
                     if (cmd_request.cmd_strobe = '1') then
 
                         -- save request parameters
-                        chip_address_req <= "000" & cmd_request.cmd_chip_id; -- need a mapping between CBC id and CBC chip address
+                        chip_address_req <= "111" & cmd_request.cmd_chip_id; -- need a mapping between CBC id and CBC chip address
                         rw_req <= cmd_request.cmd_read;
                         page_req <= cmd_request.cmd_page;
                         reg_address_req <= cmd_request.cmd_register;
@@ -116,14 +133,14 @@ begin
                     en <= '0';
                     if (valid_o = '1') then
                         reg0 := data_o;
-                        if (reg0(7) = page_req) then
-                            if (mask_req = x"FF") then
+                        if (reg0(7) = page_req) then -- page is already the good one
+                            if (mask_req = x"FF") then -- if the complete mask, no need to read the register first
                                 reg_val <= x"00";
                                 state <= GOOD_TO_GO;
-                            else
+                            else -- need to read current value of the register to not overwrite
                                 state <= READ_REG_VALUE;
                             end if;
-                        else
+                        else -- need to set the proper page
                             state <= WRITE_PAGE;
                         end if;
                     elsif (error_o = '1') then
@@ -162,7 +179,7 @@ begin
                         state <= ERROR; --need error handling
                     end if;
 
-               when GOOD_TO_GO =>
+               when GOOD_TO_GO => -- now really writing
                     en <= '1';
                     chip_address <= chip_address_req;
                     reg_address <= reg_address_req;
@@ -173,16 +190,26 @@ begin
                 when WAIT_FOR_DONE =>
                     en <= '0';
                     if (valid_o = '1') then
-                        data <= data_o;
+                        --data <= data_o;
                         state <= SUCCESS;
+                        cmd_rbus_tmp.cmd_strobe <= '1';
+                        cmd_rbus_tmp.cmd_data <= data_o;
+                        cmd_rbus_tmp.cmd_err <= '0';
                     elsif (error_o = '1') then
                         state <= ERROR;
+                        cmd_rbus_tmp.cmd_strobe <= '1';
+                        cmd_rbus_tmp.cmd_data <= x"EE";
+                        cmd_rbus_tmp.cmd_err <= '1';
                     end if;
 
                 when ERROR =>
+              
+                    state <= IDLE;
                 
                 when SUCCESS =>
-                    
+ 
+                    state <= IDLE;
+
 
             end case;
         end if;
@@ -222,13 +249,13 @@ begin
         sda_tri_o => master_sda_tri
     );
 
-    sda_master_iobuf : iobuf
-    port map (
-        o           => sda_miso_to_master,
-        io          => sda,
-        i           => sda_mosi_to_slave,
-        t           => master_sda_tri
-    );
+--    sda_master_iobuf : iobuf
+--    port map (
+--        o           => sda_miso_to_master,
+--        io          => sda,
+--        i           => sda_mosi_to_slave,
+--        t           => master_sda_tri
+--    );
 
 end Behavioral;
                 

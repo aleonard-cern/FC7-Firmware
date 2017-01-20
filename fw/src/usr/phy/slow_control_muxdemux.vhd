@@ -79,6 +79,7 @@ begin
 
                         -- reset all output requests
                         cmd_request_o <= (others => (cmd_strobe => '0', cmd_hybrid_id => (others => '0'), cmd_chip_id => (others => '0'), cmd_page => '0', cmd_read => '0', cmd_register => (others => '0'), cmd_data => (others => '0'), cmd_write_mask => (others => '0')));
+                        cmd_reply_o <= (cmd_strobe => '0', cmd_data => (others => '0'), cmd_err => '0');
 
                         -- When strobe detected
                         if (cmd_request_i.cmd_strobe = '1') then

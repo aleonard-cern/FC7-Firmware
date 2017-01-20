@@ -163,10 +163,13 @@ architecture usr of user_core is
     signal clk_320MHz : std_logic;
     
     signal cmd_reply : cmd_rbus;
-    signal stub_to_hb : stub_data_to_hb_t_array(1 to 2);
+    signal stub_to_hb : stub_data_to_hb_t_array(1 to 1);
     signal trig_data_to_hb : trig_data_to_hb_t_array(1 to NUM_HYBRIDS);
     signal fast_command_to_phy : cmd_fastbus;
 
+    signal scl_io  : std_logic;
+    signal sda_io  : std_logic;
+    
 begin
 
     --===========================================--
@@ -286,7 +289,10 @@ begin
         cmd_request_i       => (cmd_strobe => '0', cmd_hybrid_id => (others => '0'), cmd_chip_id => (others => '0'), cmd_page => '0', cmd_read => '0', cmd_register => (others => '0'), cmd_data => (others => '0'), cmd_write_mask => (others => '0')),
     
         -- slow control response to command generator
-        cmd_reply_o         => cmd_reply
+        cmd_reply_o         => cmd_reply,
+        
+        scl_io => scl_io,
+        sda_io => sda_io
     );        
     
     fmc_l8_la_p(33) <= cmd_reply.cmd_strobe;
