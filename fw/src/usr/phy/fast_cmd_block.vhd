@@ -67,7 +67,7 @@ begin
 
             if (reset_i = '1') then
                 fast_cmd_o <= '0';
-                frame_to_send := "11000001";
+                frame_to_send := x"00";
             else
 
                 if (prev_clk = '0' and current_clk = '1') then

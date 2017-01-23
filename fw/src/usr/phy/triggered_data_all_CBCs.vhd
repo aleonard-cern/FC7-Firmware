@@ -124,6 +124,8 @@ begin
                     else  
                         is_sent <= '0';
                         cycle_for_sending := 15;
+                        trig_data_to_hb_o <= dummy;
+
                     end if;                   
                     
                 end if;

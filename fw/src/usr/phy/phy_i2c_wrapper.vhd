@@ -84,134 +84,136 @@ architecture Behavioral of phy_i2c_wrapper is
 begin
 
     cmd_reply <= cmd_rbus_tmp;
-    process(clk, reset)
+    process(clk)
         variable reg0 : std_logic_vector(7 downto 0) := (others => '0');
 
     begin
-        if (reset = '1') then
-        
-            cmd_rbus_tmp.cmd_strobe <= '0';
-            cmd_rbus_tmp.cmd_data <= x"00";
-            cmd_rbus_tmp.cmd_err <= '0';
+
             
-            chip_address_req <= (others => '0'); -- need a mapping between CBC id and CBC chip address
-            rw_req <= '0';
-            page_req <= '0';
-            reg_address_req <= (others => '0');
-            data_req <= (others => '0');
-
-            state <= IDLE;
+        if (rising_edge(clk)) then
+            if (reset = '1') then
             
-        elsif (rising_edge(clk)) then
-
-            case state is
-                when IDLE =>
-                    cmd_rbus_tmp.cmd_strobe <= '0';
-                    cmd_rbus_tmp.cmd_data <= x"00";
-                    cmd_rbus_tmp.cmd_err <= '0'; 
-                    if (cmd_request.cmd_strobe = '1') then
-
-                        -- save request parameters
-                        chip_address_req <= "111" & cmd_request.cmd_chip_id; -- need a mapping between CBC id and CBC chip address
-                        rw_req <= cmd_request.cmd_read;
-                        page_req <= cmd_request.cmd_page;
-                        reg_address_req <= cmd_request.cmd_register;
-                        data_req <= cmd_request.cmd_data;
-
-                        state <= READ_CURRENT_PAGE;
-
-                    end if;
-
-                when READ_CURRENT_PAGE =>
-                    en <= '1';
-                    chip_address <= chip_address_req;
-                    reg_address <= x"00";
-                    rw <= '1';
-                    state <= WAIT_CURRENT_PAGE;
-
-                when WAIT_CURRENT_PAGE =>
-                    en <= '0';
-                    if (valid_o = '1') then
-                        reg0 := data_o;
-                        if (reg0(7) = page_req) then -- page is already the good one
-                            if (mask_req = x"FF") then -- if the complete mask, no need to read the register first
-                                reg_val <= x"00";
-                                state <= GOOD_TO_GO;
-                            else -- need to read current value of the register to not overwrite
-                                state <= READ_REG_VALUE;
-                            end if;
-                        else -- need to set the proper page
-                            state <= WRITE_PAGE;
-                        end if;
-                    elsif (error_o = '1') then
-                        state <= ERROR; --need error handling
-                    end if;
-
-                when READ_REG_VALUE =>
-                    en <= '1';
-                    chip_address <= chip_address_req;
-                    reg_address <= reg_address_req;
-                    rw <= '1';
-                    state <= WAIT_CURRENT_REG;
-
-                when WAIT_CURRENT_REG =>
-                    en <= '0';
-                    if (valid_o = '1') then
-                        reg_val <= data_o;
-                        state <= GOOD_TO_GO;
-                    elsif (error_o = '1') then
-                        state <= ERROR; --need error handling
-                    end if;
-
-                when WRITE_PAGE =>
-                    en <= '1';
-                    chip_address <= chip_address_req;
-                    reg_address <= x"00";
-                    rw <= '0'; -- write
-                    data <= page_req & reg0(6 downto 0);
-                    state <= WAIT_FOR_GOOD_PAGE;
-
-               when WAIT_FOR_GOOD_PAGE =>
-                    en <= '0';
-                    if (valid_o = '1') then
-                        state <= GOOD_TO_GO;
-                    elsif (error_o = '1') then
-                        state <= ERROR; --need error handling
-                    end if;
-
-               when GOOD_TO_GO => -- now really writing
-                    en <= '1';
-                    chip_address <= chip_address_req;
-                    reg_address <= reg_address_req;
-                    rw <= rw_req;
-                    data <= (data_req and mask_req) or reg_val;
-                    state <= WAIT_FOR_DONE;
-
-                when WAIT_FOR_DONE =>
-                    en <= '0';
-                    if (valid_o = '1') then
-                        --data <= data_o;
-                        state <= SUCCESS;
-                        cmd_rbus_tmp.cmd_strobe <= '1';
-                        cmd_rbus_tmp.cmd_data <= data_o;
-                        cmd_rbus_tmp.cmd_err <= '0';
-                    elsif (error_o = '1') then
-                        state <= ERROR;
-                        cmd_rbus_tmp.cmd_strobe <= '1';
-                        cmd_rbus_tmp.cmd_data <= x"EE";
-                        cmd_rbus_tmp.cmd_err <= '1';
-                    end if;
-
-                when ERROR =>
-              
-                    state <= IDLE;
+                cmd_rbus_tmp.cmd_strobe <= '0';
+                cmd_rbus_tmp.cmd_data <= x"00";
+                cmd_rbus_tmp.cmd_err <= '0';
                 
-                when SUCCESS =>
- 
-                    state <= IDLE;
-
-
-            end case;
+                chip_address_req <= (others => '0'); -- need a mapping between CBC id and CBC chip address
+                rw_req <= '0';
+                page_req <= '0';
+                reg_address_req <= (others => '0');
+                data_req <= (others => '0');
+    
+                state <= IDLE;
+            else     
+                case state is
+                    when IDLE =>
+                        cmd_rbus_tmp.cmd_strobe <= '0';
+                        cmd_rbus_tmp.cmd_data <= x"00";
+                        cmd_rbus_tmp.cmd_err <= '0'; 
+                        if (cmd_request.cmd_strobe = '1') then
+    
+                            -- save request parameters
+                            chip_address_req <= "111" & cmd_request.cmd_chip_id; -- need a mapping between CBC id and CBC chip address
+                            rw_req <= cmd_request.cmd_read;
+                            page_req <= cmd_request.cmd_page;
+                            reg_address_req <= cmd_request.cmd_register;
+                            data_req <= cmd_request.cmd_data;
+    
+                            state <= READ_CURRENT_PAGE;
+    
+                        end if;
+    
+                    when READ_CURRENT_PAGE =>
+                        en <= '1';
+                        chip_address <= chip_address_req;
+                        reg_address <= x"00";
+                        rw <= '1';
+                        state <= WAIT_CURRENT_PAGE;
+    
+                    when WAIT_CURRENT_PAGE =>
+                        en <= '0';
+                        if (valid_o = '1') then
+                            reg0 := data_o;
+                            if (reg0(7) = page_req) then -- page is already the good one
+                                if (mask_req = x"FF") then -- if the complete mask, no need to read the register first
+                                    reg_val <= x"00";
+                                    state <= GOOD_TO_GO;
+                                else -- need to read current value of the register to not overwrite
+                                    state <= READ_REG_VALUE;
+                                end if;
+                            else -- need to set the proper page
+                                state <= WRITE_PAGE;
+                            end if;
+                        elsif (error_o = '1') then
+                            state <= ERROR; --need error handling
+                        end if;
+    
+                    when READ_REG_VALUE =>
+                        en <= '1';
+                        chip_address <= chip_address_req;
+                        reg_address <= reg_address_req;
+                        rw <= '1';
+                        state <= WAIT_CURRENT_REG;
+    
+                    when WAIT_CURRENT_REG =>
+                        en <= '0';
+                        if (valid_o = '1') then
+                            reg_val <= data_o;
+                            state <= GOOD_TO_GO;
+                        elsif (error_o = '1') then
+                            state <= ERROR; --need error handling
+                        end if;
+    
+                    when WRITE_PAGE =>
+                        en <= '1';
+                        chip_address <= chip_address_req;
+                        reg_address <= x"00";
+                        rw <= '0'; -- write
+                        data <= page_req & reg0(6 downto 0);
+                        state <= WAIT_FOR_GOOD_PAGE;
+    
+                   when WAIT_FOR_GOOD_PAGE =>
+                        en <= '0';
+                        if (valid_o = '1') then
+                            state <= GOOD_TO_GO;
+                        elsif (error_o = '1') then
+                            state <= ERROR; --need error handling
+                        end if;
+    
+                   when GOOD_TO_GO => -- now really writing
+                        en <= '1';
+                        chip_address <= chip_address_req;
+                        reg_address <= reg_address_req;
+                        rw <= rw_req;
+                        data <= (data_req and mask_req) or reg_val;
+                        state <= WAIT_FOR_DONE;
+    
+                    when WAIT_FOR_DONE =>
+                        en <= '0';
+                        if (valid_o = '1') then
+                            --data <= data_o;
+                            state <= SUCCESS;
+                            cmd_rbus_tmp.cmd_strobe <= '1';
+                            cmd_rbus_tmp.cmd_data <= data_o;
+                            cmd_rbus_tmp.cmd_err <= '0';
+                        elsif (error_o = '1') then
+                            state <= ERROR;
+                            cmd_rbus_tmp.cmd_strobe <= '1';
+                            cmd_rbus_tmp.cmd_data <= x"EE";
+                            cmd_rbus_tmp.cmd_err <= '1';
+                        end if;
+    
+                    when ERROR =>
+                  
+                        state <= IDLE;
+                    
+                    when SUCCESS =>
+     
+                        state <= IDLE;
+    
+    
+                end case;
+            end if;
         end if;
     end process;
 

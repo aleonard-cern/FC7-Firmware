@@ -92,7 +92,7 @@ package user_package is
     
         
     --== stub data to hybrid block ==--
-    type one_cbc_stubs_r_array is array(NCBC_PER_HYBRID downto 0) of one_cbc_stubs_r;
+    type one_cbc_stubs_r_array is array(NCBC_PER_HYBRID - 1 downto 0) of one_cbc_stubs_r;
     
     type stub_data_to_hb_t_array is array(natural range <>) of one_cbc_stubs_r_array;
     

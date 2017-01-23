@@ -43,6 +43,7 @@ entity phy_core is
         clk_320_i           : in std_logic;
         clk_320_o           : out std_logic;
         reset_i             : in std_logic;
+        reset_o             : out std_logic;
     
         -- fast command input bus
         cmd_fast_i          : in cmd_fastbus;
@@ -70,8 +71,6 @@ entity phy_core is
         
         scl_io              : inout std_logic;
         sda_io              : inout std_logic
-        --i2c_mosi            : out std_logic;
-        --i2c_miso            : in std_logic
         
     );
 end phy_core;
@@ -106,14 +105,14 @@ begin
     );
 
     --== slow control block ==--
-    -- muxdemux to select which hybrid is concerned
+    -- muxdemux to select which hybrid is concerned for slow control
     slow_control_muxdemux_inst : entity work.slow_control_muxdemux
     generic map (
         NUM_HYBRID => NUM_HYBRID
     )
     port map (
         clk => clk_40,
-        reset_i => '0',
+        reset_i => reset_i,
         cmd_request_i => cmd_request_i,
         cmd_request_o => cmd_request,
         cmd_reply_i => cmd_reply,
@@ -121,13 +120,13 @@ begin
     );
     
     -- i2c master cores for the NHYBRIDS
-    --gen_i2c: for index in 1 to NUM_HYBRID generate
+    gen_i2c: for index in 1 to NUM_HYBRID generate
         phy_i2c_wrapper_inst : entity work.phy_i2c_wrapper
         port map (
             clk => clk_40,
             reset => reset_i,
-            cmd_request => cmd_request(1),
-            cmd_reply => cmd_reply(1),
+            cmd_request => cmd_request(index),
+            cmd_reply => cmd_reply(index),
             
             scl => scl,
             sda => sda,
@@ -136,40 +135,40 @@ begin
             sda_mosi_to_slave => sda_mosi,
             master_sda_tri => sda_tri
         );
-    --end generate gen_i2c;
+    end generate gen_i2c;
     
     
     --== triggered data readout block ==--
-    --gen_trig_data_readout : for index in 1 to NUM_HYBRID generate
+    gen_trig_data_readout : for index in 1 to NUM_HYBRID generate
         trigger_data_readout_wrapper_inst : entity work.trigger_data_readout_wrapper
         port map (
             clk320 => clk_320_i,
             clk40 => clk_40,
             reset_i => reset_i,
-            triggered_data_from_fe_i => trig_data_i(1),
-            sync_from_CBC_i => stub_data_i(1),
-            trig_data_to_hb_o => trig_data_o(1)
+            triggered_data_from_fe_i => trig_data_i(index),
+            sync_from_CBC_i => stub_data_i(index),
+            trig_data_to_hb_o => trig_data_o(index)
         );
-    --end generate gen_trig_data_readout; 
+    end generate gen_trig_data_readout; 
     
     
     --== stub lines block ==--
-    --gen_stub_data_readout : for index in 1 to NUM_HYBRID generate
+    gen_stub_data_readout : for index in 1 to NUM_HYBRID generate
        stub_data_readout_inst : entity work.stub_data_all_CBCs
         port map (
             clk320 => clk_320_i,
             reset_i => reset_i,       
-            stub_lines_i =>  stub_data_i(1),
-            cbc_data_to_hb_o => stub_data_o(1)
+            stub_lines_i =>  stub_data_i(index),
+            cbc_data_to_hb_o => stub_data_o(index)
         );
-    --end generate gen_stub_data_readout;
+    end generate gen_stub_data_readout;
     
     -- buffers
     buffers_inst : entity work.buffers
-      generic map (
+    generic map (
         NCBC_PER_HYBRID => NCBC_PER_HYBRID
-      )
-      Port map (       
+    )
+    Port map (       
         CBC_dp_p_i => cbc_dp_to_buf,
         CBC_dp_n_i => cbc_dp_to_buf,
         
@@ -183,8 +182,8 @@ begin
         fast_cmd_n_o     => open,
         fast_cmd_i       => fast_cmd,   
     
-        reset_o          => open,
-        reset_i          => '0',
+        reset_o          => reset_o,
+        reset_i          => reset_i,
         
         SCL_i  => scl,   
         --SCL_o            : out std_logic; only the master drives the scl clock right now
@@ -193,10 +192,8 @@ begin
         SDA_io => sda_io,
         SDA_mosi_i => sda_mosi,
         SDA_miso_o => sda_miso,
-        SDA_tri_i => sda_tri
-
-        
-      );
+        SDA_tri_i => sda_tri        
+    );
     
     
 end rtl;
