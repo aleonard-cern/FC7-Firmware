@@ -164,11 +164,11 @@ architecture usr of user_core is
     
     signal cmd_reply : cmd_rbus;
     signal stub_to_hb : stub_data_to_hb_t_array(1 to 1);
-    signal trig_data_to_hb : trig_data_to_hb_t_array(1 to NUM_HYBRIDS);
+    signal trig_data_to_hb : trig_data_to_hb_t_array(0 to NUM_HYBRIDS-1);
     signal fast_command_to_phy : cmd_fastbus;
 
-    signal scl_io  : std_logic;
-    signal sda_io  : std_logic;
+    signal scl_io  : std_logic_vector(0 to NUM_HYBRIDS-1);
+    signal sda_io  : std_logic_vector(0 to NUM_HYBRIDS-1);
     
 begin
 

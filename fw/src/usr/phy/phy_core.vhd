@@ -52,16 +52,16 @@ entity phy_core is
         cmd_fast_o          : out std_logic;
     
         -- hybrid block interface for triggered data
-        trig_data_o         : out trig_data_to_hb_t_array(1 to NUM_HYBRID);
+        trig_data_o         : out trig_data_to_hb_t_array(0 to NUM_HYBRID-1);
     
         -- hybrid block interface for stub data
-        stub_data_o         : out stub_data_to_hb_t_array(1 to NUM_HYBRID);
+        stub_data_o         : out stub_data_to_hb_t_array(0 to NUM_HYBRID-1);
         
         -- triggered data lines from CBC
-        trig_data_i         : in trig_data_from_fe_t_array(1 to NUM_HYBRID);
+        trig_data_i         : in trig_data_from_fe_t_array(0 to NUM_HYBRID-1);
     
         -- stubs lines from CBC
-        stub_data_i         : in stub_lines_r_array_array(1 to NUM_HYBRID);
+        stub_data_i         : in stub_lines_r_array_array(0 to NUM_HYBRID-1);
         
         -- slow control command from command generator
         cmd_request_i       : in cmd_wbus;
@@ -69,8 +69,8 @@ entity phy_core is
         -- slow control response to command generator
         cmd_reply_o         : out cmd_rbus;
         
-        scl_io              : inout std_logic;
-        sda_io              : inout std_logic
+        scl_io              : inout std_logic_vector(0 to NUM_HYBRID-1);
+        sda_io              : inout std_logic_vector(0 to NUM_HYBRID-1)
         
     );
 end phy_core;
@@ -78,15 +78,15 @@ end phy_core;
 architecture rtl of phy_core is
 
     signal dummy_signal             : std_logic := '0';
-    signal cmd_request              : cmd_wbus_array(1 to NUM_HYBRID);
-    signal cmd_reply                : cmd_rbus_array(1 to NUM_HYBRID);
-    signal scl                      : std_logic := '1';
-    signal sda                      : std_logic := '1';
+    signal cmd_request              : cmd_wbus_array(0 to NUM_HYBRID-1);
+    signal cmd_reply                : cmd_rbus_array(0 to NUM_HYBRID-1);
+    signal scl_mosi                 : std_logic_vector(0 to NUM_HYBRID-1) := (others => '1');
 
-    signal sda_mosi : std_logic := '1';
-    signal sda_miso : std_logic := '1';
-    signal sda_tri : std_logic := '1';
-    signal cbc_dp_to_buf : cbc_dp_to_buf_array(1 to 1) := (others => (others => '0'));
+    signal sda_mosi : std_logic_vector(0 to NUM_HYBRID-1) := (others => '1');
+    signal sda_miso : std_logic_vector(0 to NUM_HYBRID-1) := (others => '1');
+    signal sda_tri : std_logic_vector(0 to NUM_HYBRID-1) := (others => '1');
+    --signal cbc_dp_to_buf : cbc_dp_to_buf_array_array(0 to NUM_HYBRID-1)  := (others => (others => (others => '0')));
+    signal cbc_dp_to_buf : cbc_dp_to_buf_array_array(0 to NUM_HYBRID-1);
     signal fast_cmd : std_logic;
     
 begin
@@ -120,7 +120,7 @@ begin
     );
     
     -- i2c master cores for the NHYBRIDS
-    gen_i2c: for index in 1 to NUM_HYBRID generate
+    gen_i2c: for index in 0 to NUM_HYBRID-1 generate
         phy_i2c_wrapper_inst : entity work.phy_i2c_wrapper
         port map (
             clk => clk_40,
@@ -128,18 +128,17 @@ begin
             cmd_request => cmd_request(index),
             cmd_reply => cmd_reply(index),
             
-            scl => scl,
-            sda => sda,
+            scl_mosi => scl_mosi(index),
         
-            sda_miso_to_master => sda_miso,
-            sda_mosi_to_slave => sda_mosi,
-            master_sda_tri => sda_tri
+            sda_miso_to_master => sda_miso(index),
+            sda_mosi_to_slave => sda_mosi(index),
+            master_sda_tri => sda_tri(index)
         );
     end generate gen_i2c;
     
     
     --== triggered data readout block ==--
-    gen_trig_data_readout : for index in 1 to NUM_HYBRID generate
+    gen_trig_data_readout : for index in 0 to NUM_HYBRID-1 generate
         trigger_data_readout_wrapper_inst : entity work.trigger_data_readout_wrapper
         port map (
             clk320 => clk_320_i,
@@ -153,7 +152,7 @@ begin
     
     
     --== stub lines block ==--
-    gen_stub_data_readout : for index in 1 to NUM_HYBRID generate
+    gen_stub_data_readout : for index in 0 to NUM_HYBRID-1 generate
        stub_data_readout_inst : entity work.stub_data_all_CBCs
         port map (
             clk320 => clk_320_i,
@@ -164,36 +163,34 @@ begin
     end generate gen_stub_data_readout;
     
     -- buffers
-    buffers_inst : entity work.buffers
-    generic map (
-        NCBC_PER_HYBRID => NCBC_PER_HYBRID
-    )
-    Port map (       
-        CBC_dp_p_i => cbc_dp_to_buf,
-        CBC_dp_n_i => cbc_dp_to_buf,
+    gen_buffers: for index in 0 to NUM_HYBRID-1 generate
+        buffers_inst : entity work.buffers
+        Port map (       
+            CBC_dp_p_i => cbc_dp_to_buf(index),
+            CBC_dp_n_i => cbc_dp_to_buf(index),
+            
+            CBC_dp_o => open,
+            
+            clk320_p_o  => open,
+            clk320_n_o  => open,
+            clk320_i    => '0',
+            
+            fast_cmd_p_o     => cmd_fast_o,
+            fast_cmd_n_o     => open,
+            fast_cmd_i       => fast_cmd,   
         
-        CBC_dp_o => open,
-        
-        clk320_p_o  => open,
-        clk320_n_o  => open,
-        clk320_i    => '0',
-        
-        fast_cmd_p_o     => cmd_fast_o,
-        fast_cmd_n_o     => open,
-        fast_cmd_i       => fast_cmd,   
-    
-        reset_o          => reset_o,
-        reset_i          => reset_i,
-        
-        SCL_i  => scl,   
-        --SCL_o            : out std_logic; only the master drives the scl clock right now
-        SCL_io => scl_io,
-           
-        SDA_io => sda_io,
-        SDA_mosi_i => sda_mosi,
-        SDA_miso_o => sda_miso,
-        SDA_tri_i => sda_tri        
-    );
-    
+            reset_o          => reset_o,
+            reset_i          => reset_i,
+            
+            SCL_i  => scl_mosi(index),
+            --SCL_o            : out std_logic; only the master drives the scl clock right now
+            SCL_io => scl_io(index),
+               
+            SDA_io => sda_io(index),
+            SDA_mosi_i => sda_mosi(index),
+            SDA_miso_o => sda_miso(index),
+            SDA_tri_i => sda_tri(index)        
+        );
+    end generate gen_buffers;
     
 end rtl;

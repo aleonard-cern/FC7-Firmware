@@ -49,10 +49,19 @@ architecture Behavioral of triggered_data_all_CBCs is
     signal trig_data_tmp : trig_data_to_hb_t_array := (others => (others=>'0')); 
     signal is_sent : std_logic :='0';
     signal CBC_flag : std_logic_vector(NCBC_PER_HYBRID - 1 downto 0) := (others=>'0');
-      
-begin
+    type std_logic_vector_array is array(NCBC_PER_HYBRID - 1 downto 0) of std_logic_vector(127 downto 0);
+    signal trig_data_to_hb_even : std_logic_vector_array := (others => (others => '0'));
+    signal trig_data_to_hb_odd : std_logic_vector_array := (others => (others => '0'));
 
     
+begin
+    
+    cbc_loop : for I in 0 to (NCBC_PER_HYBRID  - 1) generate
+        odd : for index in 0 to 126 generate
+            trig_data_to_hb_even(I)(index) <= triggered_data_frame_r_array_i(I).channels(2*index);
+            trig_data_to_hb_odd(I)(index) <= triggered_data_frame_r_array_i(I).channels(2*index + 1);
+        end generate;
+    end generate;
     
     process(clk320)
         -- variable for current and previous 40MHz clock states 
@@ -85,15 +94,15 @@ begin
                 
                 for I in 0 to (NCBC_PER_HYBRID  - 1) loop
                     
-                    if (triggered_data_frame_r_array_i(I).start = "11" and CBC_flag(I)= '0') then
+                    if (triggered_data_frame_r_array_i(I).start = "11" and CBC_flag(I)= '0') then --even is top !
                            trig_data_tmp(2*I) <=   triggered_data_frame_r_array_i(I).start &
                                                    triggered_data_frame_r_array_i(I).pipe_address &
-                                                   triggered_data_frame_r_array_i(I).channels(253 downto 127);    
+                                                   trig_data_to_hb_even(I);    
                            
                            trig_data_tmp(2*I+1) <= triggered_data_frame_r_array_i(I).latency_error &
                                                    triggered_data_frame_r_array_i(I).buffer_overflow &
                                                    triggered_data_frame_r_array_i(I).l1_counter &
-                                                   triggered_data_frame_r_array_i(I).channels(126 downto 0); 
+                                                   trig_data_to_hb_odd(I);    
                                                       
                            CBC_flag(I) <= '1';
                            
@@ -108,14 +117,11 @@ begin
                 if (previous_clk = '0' and current_clk = '1') then
                 
                     -- if all CBC have sent triggered data (CBC_flag == ff) and there are still data to be sent
-                    --if(CBC_flag = x"FF" and trig_data_tmp(0) /= dummy) then
                     if(CBC_flag = flag_ones and cycle_for_sending > -1) then
                     
                         trig_data_to_hb_o <= trig_data_tmp(15 - cycle_for_sending);
-                        --trig_data_tmp <= dummy & trig_data_tmp(15 downto 1);
                         cycle_for_sending := cycle_for_sending - 1;
                         
-                    --elsif (CBC_flag=x"FF" and trig_data_tmp(0)=dummy) then
                     elsif (CBC_flag=flag_ones and cycle_for_sending = -1) then
                         trig_data_to_hb_o <= dummy;
                         trig_data_tmp <= (others => (others=>'0')); 

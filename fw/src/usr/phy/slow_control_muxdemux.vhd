@@ -41,8 +41,8 @@ entity slow_control_muxdemux is
         clk            : in std_logic;
         reset_i        : in std_logic;
         cmd_request_i  : in cmd_wbus;
-        cmd_request_o  : out cmd_wbus_array(1 to NUM_HYBRID);
-        cmd_reply_i    : in cmd_rbus_array(1 to NUM_HYBRID);
+        cmd_request_o  : out cmd_wbus_array(0 to NUM_HYBRID-1);
+        cmd_reply_i    : in cmd_rbus_array(0 to NUM_HYBRID-1);
         cmd_reply_o    : out cmd_rbus
     );
 end slow_control_muxdemux;
@@ -59,7 +59,7 @@ begin
 
 
     process(clk)
-        variable sel : natural range 1 to NUM_HYBRID;
+        variable sel : natural range 0 to NUM_HYBRID-1;
     begin
         if (rising_edge(clk)) then
             if (reset_i = '1') then

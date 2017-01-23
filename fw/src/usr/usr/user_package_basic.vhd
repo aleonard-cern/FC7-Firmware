@@ -54,13 +54,14 @@ package user_package is
     type trig_data_to_hb_t_array is array(natural range <>) of trig_data_to_hb_t;
     
     --== triggered data from front-end ==--
-    subtype trig_data_from_fe_t is std_logic_vector(NCBC_PER_HYBRID - 1 downto 0);
+    subtype trig_data_from_fe_t is std_logic_vector(0 to NCBC_PER_HYBRID-1);
     type trig_data_from_fe_t_array is array(natural range <>) of trig_data_from_fe_t;
 
     
     --== differential pairs to buffer ==--
     subtype cbc_dp_to_buf is std_logic_vector(5 downto 0);
-    type cbc_dp_to_buf_array is array(natural range <>) of cbc_dp_to_buf;
+    type cbc_dp_to_buf_array is array(0 to NCBC_PER_HYBRID-1) of cbc_dp_to_buf;
+    type cbc_dp_to_buf_array_array is array(natural range <>) of cbc_dp_to_buf_array;
     
     --== stub data from front-end ==--
     type stub_lines_r is
@@ -71,7 +72,7 @@ package user_package is
         dp4 : std_logic;
         dp5 : std_logic;
     end record; 
-    type stub_lines_r_array is array(NCBC_PER_HYBRID - 1 downto 0) of stub_lines_r;
+    type stub_lines_r_array is array(0 to NCBC_PER_HYBRID-1) of stub_lines_r;
     
         --== stub data from front-end array (for mutliple hybrids) ==--
     type stub_lines_r_array_array is array(natural range <>) of stub_lines_r_array;
@@ -92,7 +93,7 @@ package user_package is
     
         
     --== stub data to hybrid block ==--
-    type one_cbc_stubs_r_array is array(NCBC_PER_HYBRID - 1 downto 0) of one_cbc_stubs_r;
+    type one_cbc_stubs_r_array is array(0 to NCBC_PER_HYBRID-1) of one_cbc_stubs_r;
     
     type stub_data_to_hb_t_array is array(natural range <>) of one_cbc_stubs_r_array;
     
@@ -118,7 +119,7 @@ package user_package is
     end record;
     
     --== triggered data frame record array ==--
-    type triggered_data_frame_r_array is array (NCBC_PER_HYBRID - 1 downto 0) of triggered_data_frame_r;
+    type triggered_data_frame_r_array is array (0 to NCBC_PER_HYBRID-1) of triggered_data_frame_r;
     
 end user_package;
    

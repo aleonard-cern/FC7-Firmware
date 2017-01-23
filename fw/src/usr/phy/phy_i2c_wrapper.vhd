@@ -42,8 +42,7 @@ entity phy_i2c_wrapper is
     cmd_request: in cmd_wbus;
     cmd_reply: out cmd_rbus;
     
-    scl : inout std_logic;
-    sda : inout std_logic;
+    scl_mosi : inout std_logic;
 
     sda_miso_to_master : in std_logic ;
     sda_mosi_to_slave : out std_logic ;
@@ -244,7 +243,7 @@ begin
         data_o => data_o,
 
         -- I2C lines
-        scl_o => scl,
+        scl_o => scl_mosi,
 
         sda_miso_i => sda_miso_to_master,
         sda_mosi_o => sda_mosi_to_slave,

@@ -33,14 +33,12 @@ use UNISIM.VComponents.all;
 use work.user_package.ALL;
 
 entity buffers is
-  generic(
-    constant NCBC_PER_HYBRID : natural range 1 to 8
-  );
+
   Port (       
-    CBC_dp_p_i : in cbc_dp_to_buf_array(1 to NCBC_PER_HYBRID);
-    CBC_dp_n_i : in cbc_dp_to_buf_array(1 to NCBC_PER_HYBRID);
+    CBC_dp_p_i : in cbc_dp_to_buf_array;
+    CBC_dp_n_i : in cbc_dp_to_buf_array;
     
-    CBC_dp_o   : out cbc_dp_to_buf_array(1 to NCBC_PER_HYBRID);
+    CBC_dp_o   : out cbc_dp_to_buf_array;
     
     clk320_p_o     : out std_logic;
     clk320_n_o     : out std_logic;
@@ -69,7 +67,7 @@ architecture Behavioral of buffers is
     signal clk320_i_oddr : std_logic;
 begin
 
-    GEN_CBC: for I in 1 to NCBC_PER_HYBRID generate
+    GEN_CBC: for I in 0 to NCBC_PER_HYBRID-1 generate
         GEN_dps : for J in 0 to 5 generate
             CBC_ibufds :  ibufds
             generic map(
