@@ -4,16 +4,13 @@
 
 create_clock -period 16.000 -name eth_txoutclk [get_pins sys/eth/bufg_tx/O]
 #
-set_property PACKAGE_PIN AD6                   [get_ports osc125_a_p]
-create_clock -period 8.000 -name osc125_a      [get_ports osc125_a_p]
+set_property PACKAGE_PIN AD6 [get_ports osc125_a_p]
+create_clock -period 8.000 -name osc125_a [get_ports osc125_a_p]
 #
-set_property PACKAGE_PIN U8                    [get_ports osc125_b_p]
-create_clock -period 8.000 -name osc125_b      [get_ports osc125_b_p]
+set_property PACKAGE_PIN U8 [get_ports osc125_b_p]
+create_clock -period 8.000 -name osc125_b [get_ports osc125_b_p]
 #
-#set_clock_groups -asynchronous \
-#    -group [get_clocks -include_generated_clocks eth_txoutclk] \
-#    -group [get_clocks -include_generated_clocks osc125_a] \
-#    -group [get_clocks -include_generated_clocks osc125_b]
+#set_clock_groups -asynchronous #    -group [get_clocks -include_generated_clocks eth_txoutclk] #    -group [get_clocks -include_generated_clocks osc125_a] #    -group [get_clocks -include_generated_clocks osc125_b]
 ##############################
 # resets / timing ignore
 ##############################
@@ -382,6 +379,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports {fpga_config_data[15]}]
 
 set_operating_conditions -board_layers 16+
 set_operating_conditions -board custom
+
 
 
 

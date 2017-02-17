@@ -271,7 +271,7 @@ begin
         cmd_fast_i          => fast_command_to_phy,
     
         -- fast command serial output
-        cmd_fast_o          => fmc_l8_la_p(23),
+        cmd_fast_o          => open,
 
         -- hybrid block interface for triggered data
         trig_data_o         => trig_data_to_hb,
@@ -294,10 +294,9 @@ begin
         scl_io => scl_io,
         sda_io => sda_io
     );        
-    
-    fmc_l8_la_p(33) <= cmd_reply.cmd_strobe;
-    fmc_l8_la_p(32 downto 25) <= cmd_reply.cmd_data;
-    fmc_l8_la_p(24) <= cmd_reply.cmd_err;
+--    fmc_l8_la_p(33) <= cmd_reply.cmd_strobe;
+--    fmc_l8_la_p(32 downto 25) <= cmd_reply.cmd_data;
+--    fmc_l8_la_p(24) <= cmd_reply.cmd_err;
     --===================================--
     
     --===================================--
