@@ -109,7 +109,7 @@ begin
                   case counter is
                   
                     when 8 => 
-                         
+                        clk40_internal <= '1';
                         counter <= 7;
                         
                     when 7 =>                         
@@ -121,10 +121,10 @@ begin
                     when 5 =>   
                         counter <= 4;
                         fast_reset <= fast_cmd_i;
-                        clk40_internal <= '0';
                         
                     when 4 => 
                         trigger <= fast_cmd_i;
+                        clk40_internal <= '0';
                         counter <= 3;
 
                     when 3 =>    
@@ -138,7 +138,6 @@ begin
                     when 1 =>                    
                         --== reset counter for next batch ==-
                         counter <= 8; 
-                        clk40_internal <= '1';
                         
                         
                         

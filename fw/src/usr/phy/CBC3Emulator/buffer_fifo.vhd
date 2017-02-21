@@ -33,7 +33,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity buffer_fifo is
     Generic (
-        constant DATA_WIDTH : positive := 280;
+        constant DATA_WIDTH : positive := 276;
         constant FIFO_DEPTH : positive := 32
     );
     Port (
@@ -42,245 +42,134 @@ entity buffer_fifo is
         reset_i : in std_logic;
         synch_bit_i : in std_logic;
         data_in : in std_logic_vector(DATA_WIDTH-1 downto 0);
+        trigger_in : in std_logic;
         data_bit_out : out std_logic
     );
 end buffer_fifo;
 
 architecture Behavioral of buffer_fifo is
 
-type state_t is (IDLE, WAIT_FOR_SYNCH, ALMOST_SYNCH, TRANSMITTING);
-signal state: state_t := IDLE;
+    type state_t is (IDLE, WAIT_FOR_SYNCH, ALMOST_SYNCH, TRANSMITTING);
+    signal state: state_t := IDLE;
+    
+    signal is_empty_fifo : std_logic := '1';
+    signal is_full_fifo : std_logic := '0';
+    signal is_valid : std_logic := '0';
+    signal is_full_32 : std_logic := '0';
+    signal wr_en : std_logic := '0';
+    signal rd_en : std_logic := '0';
+    signal data_out : std_logic_vector (DATA_WIDTH-1 downto 0);    
+    signal transmition_in_progress : std_logic := '0';
+    signal index : natural range 1 to DATA_WIDTH := 1;
+    signal reset_dummy : std_logic := '1';
+    signal reset_count : natural range 0 to 20 := 0;
 
-signal is_empty : std_logic := '1';
-signal is_full : std_logic := '0';
-
-signal Head : natural range 0 to FIFO_DEPTH - 1;
-signal Tail : natural range 0 to FIFO_DEPTH - 1;
 
 begin
 
-fifo_write: process(clk_320)
-type FIFO_memory is array (0 to FIFO_DEPTH - 1) of std_logic_vector (DATA_WIDTH-1 downto 0);
-variable Memory : FIFO_memory;
-variable tmp_data : std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
+    -- fifo instance
+    fifo_buffer: entity work.fifo_cbc3
+    PORT MAP(
+        clk => clk_40,
+        rst => reset_dummy,
+        din => data_in,
+        wr_en => wr_en,
+        rd_en => rd_en,
+        dout => data_out,
+        full => is_full_fifo,
+        empty => is_empty_fifo,
+        valid => is_valid,
+        prog_full => is_full_32
+    );
 
-variable looped : boolean;
 
-variable prev_clock : std_logic := '0';
-variable curr_clock : std_logic := '0';
-variable index : natural range 0 to DATA_WIDTH-1 := 1;
-variable synch_bit_cnt : integer := 0;
-
-begin
-    if rising_edge(clk_320) then
-       if (reset_i='1') then
-         Head <= 0;
-         Tail <= 0;
-         looped := false;
-         state<=IDLE;
-         is_full <= '0';
-         is_empty <= '0';
-         tmp_data := (others=>'0');
-         data_bit_out <= '0';
-         index := 1;
-        else
--- write to fifo
-        prev_clock := curr_clock;
-        curr_clock := clk_40;
-        if (prev_clock='0' and curr_clock='1') then    
-            if(data_in(1 downto 0)="11" and is_full='0') then -- write en
-                if (((looped=false) or (Head/=Tail))) then
-                    Memory(Head) := data_in;
-                    --Memory(Head)(DATA_WIDTH - 1) := '1';
-                    --Memory(Head)(DATA_WIDTH - 2) := '1';
-                    --Memory(Head)(DATA_WIDTH - 3 downto 0) := (others => '0');
-                    if (Head = FIFO_DEPTH -1) then
-                        Head <= 0;
-                        looped := true;
-                    else
-                        Head <= Head+1;
-                    end if;--change pointer
-                end if;--looped
-            end if;--write_en 
-        if (Head = Tail) then
-            if looped then
-                is_full<='1';
-            else
-                is_empty<='1';
+    -- write triggered data to fifo on L1 trigger event
+    fifo_write: process(clk_40)
+    begin
+        if rising_edge(clk_40) then
+            
+            if (reset_count > 6) then
+                reset_dummy <= '0';
+            else 
+                reset_count <= reset_count + 1;
             end if;
-        else
-            is_empty <= '0';
-            is_full <= '0';
-        end if;
-       end if;
-
-
--- read from fifo
-       case state is
-        when IDLE =>
-            index := 1;
-            if ((looped = true) or (Head/=Tail)) then
-                tmp_data := Memory(Tail);
-               -- if(is_full='1') then
-               --     tmp_data(2) := '1';
-                --end if;
-                state <= WAIT_FOR_SYNCH;
-                synch_bit_cnt := 0;
-
+        
+            if (reset_i = '1' or reset_dummy = '1') then
+                wr_en <= '0';
             else
-                tmp_data := (others=>'0');
-                data_bit_out <= '0';
-                state <= IDLE;
-            end if;
-
-        when WAIT_FOR_SYNCH =>    
-            if (synch_bit_i='1') then
-                state <= ALMOST_SYNCH;    
-            else
-                data_bit_out <= '0';
-            end if;
-
-        when ALMOST_SYNCH =>
-            if (synch_bit_cnt=6) then
-                state<=TRANSMITTING;   
-                data_bit_out <= tmp_data(0);
-                synch_bit_cnt := 0;
-             else
-                synch_bit_cnt := synch_bit_cnt +1;   
-             end if; 
-
-        when TRANSMITTING =>
-            if ((index < DATA_WIDTH)) then
-
-                data_bit_out <= tmp_data(index);
-                index := index+1;
-
-                state <= TRANSMITTING;
-            else
-                state <= IDLE;
-                index := 1;
-                data_bit_out <= '0';
-                if (Tail = FIFO_DEPTH - 1) then
-                    Tail <= 0;
-                    looped := false;
-                else   
-                    Tail <= Tail + 1;
+                if (trigger_in = '1') then
+                    wr_en <= '1';
+                else
+                    wr_en <= '0';
                 end if;
             end if;
-        when others =>
-            state <= IDLE;
-            index := 1;
-            data_bit_out <= '0';
-            --prev_ev := curr_ev;
-       end case;
-       end if;
-    end if;
-end process;
---fifo_shift: process(clk_320)
---    type FIFO_memory is array (0 to FIFO_DEPTH - 1) of std_logic_vector (DATA_WIDTH-1 downto 0);
---    variable Memory : FIFO_memory;
+            
+        end if;
+    end process;
     
---    variable Head : natural range 0 to FIFO_DEPTH - 1;
---    variable Tail : natural range 0 to FIFO_DEPTH - 1;
---    variable looped : boolean;
+    fifo_read: process(clk_40)
+    begin
+        if rising_edge(clk_40) then
+            if (reset_i = '1'  or reset_dummy = '1') then
+                rd_en <= '0';
+            else 
+                if (is_empty_fifo = '0' and transmition_in_progress = '0') then
+                    rd_en <= '1';
+                else 
+                    rd_en <= '0';
+                end if;
+            end if;
+        
+        end if;
+    end process;
     
---    variable prev_clock : std_logic := '0';
---    variable curr_clock : std_logic := '0';
---    variable index : natural range 0 to DATA_WIDTH;
-    
---    variable prev_ev : natural range 0 to FIFO_DEPTH - 1 := 0;
---    variable curr_ev : natural range 0 to FIFO_DEPTH - 1 := 0;
---    --variable start : std_logic := '0';
-    
---    begin  
---        if(rising_edge(clk_320)) then
---            prev_clock := curr_clock;
---            curr_clock := clk_40;
---            if (prev_clock='0' and curr_clock='1') then
---                if(reset='1') then
---                    Head := 0;
---                    Tail := 0;
---                    Looped := false;
-                    
---                    is_empty <='1';
---                    is_full <= '0';
---                else
---                    if(read_en='1') then
---                        if ((Looped = true) or (Head/=Tail)) then
---                            tmp_data <= Memory(Tail);
---                            curr_ev := Tail; 
---                            if (Tail = FIFO_DEPTH - 1) then
---                                Tail := 0;
---                                Looped := false;
---                            else   
---                                Tail := Tail + 1;
---                            end if;
---                        else
---                            tmp_data <= (others=>'0');
---                        end if;
---                    end if;
-                    
---                    if(data_in(1 downto 0)="11") then -- write en
---                    --if (true) then
---                        if ((Looped=false) or (Head/=Tail)) then
---                            Memory(Head) := data_in;
---                            if (Head = FIFO_DEPTH -1) then
---                                Head := 0;
---                                Looped := true;
---                            else
---                                Head := Head+1;
---                            end if;--change pointer
---                        end if;--looped
---                    end if;--write_en 
-                    
---                    if (Head = Tail) then
---                        if Looped then
---                            is_full<='1';
---                            --tmp_data(2) <='1'; -- fifo full error bit FIXME??
---                        else
---                            is_empty<='1';
---                        end if;
---                    else
---                        is_empty <= '0';
---                        is_full <= '0';
---                    end if;
-                        
---                end if; --reset
---           end if; --clk_40
-           
+    data_send: process(clk_320)
+    begin
+        if rising_edge(clk_320) then
+        
+            case state is
+                when IDLE =>
+                    if (rd_en = '1') then
+                        transmition_in_progress <= '1';
+                        state <= WAIT_FOR_SYNCH;
+        
+                    else
+                        data_bit_out <= '0';
+                        state <= IDLE;
+                    end if;
+        
+                when WAIT_FOR_SYNCH =>    
+                    if (synch_bit_i = '1') then
+                        state <= TRANSMITTING;
+                        data_bit_out <= data_out(0);
+                    else
+                        data_bit_out <= '0';
+                    end if;
+            
+            
+                when TRANSMITTING =>
+                    if (index /= DATA_WIDTH) then
+        
+                        data_bit_out <= data_out(index);
+                        index <= index + 1;
 
---           case state is
---            when IDLE =>
---                if (synch_bit_i='1' and prev_ev/=curr_ev) then
---                    state <= TRANSMITTING;
---                    data_bit_out <= tmp_data(0);
---                    index := 1;
---                    read_en <='0';
---                else
---                    data_bit_out <= '0';
---                end if;
-                 
---            when TRANSMITTING =>
---                if ((index < DATA_WIDTH-1)) then
---                    data_bit_out <= tmp_data(index);
---                    index := index+1;
---                    state <= TRANSMITTING;
---                else
---                    state <= IDLE;
---                    index := 0;
---                    read_en <='1';
---                    data_bit_out <= '0';
---                    prev_ev := curr_ev;
---                end if;
---            when others =>
---                state <= IDLE;
---                index := 0;
---                read_en <='1';
---                data_bit_out <= '0';
---                --prev_ev := curr_ev;
---           end case;                     
-           
---       end if; --clk320
---    end process;
+                    else
+                    
+                        state <= IDLE;
+                        index <= 1;
+                        data_bit_out <= '0';
+                        transmition_in_progress <= '0';
+
+                    end if;
+                    
+                when others =>
+                    state <= IDLE;
+                    index <= 1;
+                    data_bit_out <= '0';
+                    transmition_in_progress <= '0';
+
+            end case;            
+        end if;
+    end process;
 
 end Behavioral;

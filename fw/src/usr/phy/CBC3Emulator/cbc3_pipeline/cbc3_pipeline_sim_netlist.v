@@ -1,10 +1,10 @@
 // Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2016.3 (lin64) Build 1682563 Mon Oct 10 19:07:26 MDT 2016
-// Date        : Fri Feb 17 19:24:57 2017
+// Date        : Tue Feb 21 13:05:19 2017
 // Host        : daq running 64-bit Linux Mint 17.2 Rafaela
-// Command     : write_verilog -force -mode funcsim -rename_top cbc3_pipeline -prefix
-//               cbc3_pipeline_ cbc3_pipeline_sim_netlist.v
+// Command     : write_verilog -force -mode funcsim
+//               /home/daq/Documents/fc7_firmware/test/FC7-Firmware/fw/src/usr/phy/CBC3Emulator/cbc3_pipeline/cbc3_pipeline_sim_netlist.v
 // Design      : cbc3_pipeline
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -28,18 +28,18 @@ module cbc3_pipeline
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA EN" *) input ena;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA WE" *) input [0:0]wea;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA ADDR" *) input [8:0]addra;
-  (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA DIN" *) input [279:0]dina;
+  (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTA DIN" *) input [275:0]dina;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTB CLK" *) input clkb;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTB EN" *) input enb;
   (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTB ADDR" *) input [8:0]addrb;
-  (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTB DOUT" *) output [279:0]doutb;
+  (* x_interface_info = "xilinx.com:interface:bram:1.0 BRAM_PORTB DOUT" *) output [275:0]doutb;
 
   wire [8:0]addra;
   wire [8:0]addrb;
   wire clka;
   wire clkb;
-  wire [279:0]dina;
-  wire [279:0]doutb;
+  wire [275:0]dina;
+  wire [275:0]doutb;
   wire ena;
   wire enb;
   wire [0:0]wea;
@@ -55,12 +55,12 @@ module cbc3_pipeline
   wire NLW_U0_s_axi_sbiterr_UNCONNECTED;
   wire NLW_U0_s_axi_wready_UNCONNECTED;
   wire NLW_U0_sbiterr_UNCONNECTED;
-  wire [279:0]NLW_U0_douta_UNCONNECTED;
+  wire [275:0]NLW_U0_douta_UNCONNECTED;
   wire [8:0]NLW_U0_rdaddrecc_UNCONNECTED;
   wire [3:0]NLW_U0_s_axi_bid_UNCONNECTED;
   wire [1:0]NLW_U0_s_axi_bresp_UNCONNECTED;
   wire [8:0]NLW_U0_s_axi_rdaddrecc_UNCONNECTED;
-  wire [279:0]NLW_U0_s_axi_rdata_UNCONNECTED;
+  wire [275:0]NLW_U0_s_axi_rdata_UNCONNECTED;
   wire [3:0]NLW_U0_s_axi_rid_UNCONNECTED;
   wire [1:0]NLW_U0_s_axi_rresp_UNCONNECTED;
 
@@ -87,7 +87,7 @@ module cbc3_pipeline
   (* C_EN_SAFETY_CKT = "0" *) 
   (* C_EN_SHUTDOWN_PIN = "0" *) 
   (* C_EN_SLEEP_PIN = "0" *) 
-  (* C_EST_POWER_SUMMARY = "Estimated Power for IP     :     28.7092 mW" *) 
+  (* C_EST_POWER_SUMMARY = "Estimated Power for IP     :     28.5684 mW" *) 
   (* C_FAMILY = "kintex7" *) 
   (* C_HAS_AXI_ID = "0" *) 
   (* C_HAS_ENA = "1" *) 
@@ -114,8 +114,8 @@ module cbc3_pipeline
   (* C_PRIM_TYPE = "1" *) 
   (* C_READ_DEPTH_A = "512" *) 
   (* C_READ_DEPTH_B = "512" *) 
-  (* C_READ_WIDTH_A = "280" *) 
-  (* C_READ_WIDTH_B = "280" *) 
+  (* C_READ_WIDTH_A = "276" *) 
+  (* C_READ_WIDTH_B = "276" *) 
   (* C_RSTRAM_A = "0" *) 
   (* C_RSTRAM_B = "0" *) 
   (* C_RST_PRIORITY_A = "CE" *) 
@@ -134,8 +134,8 @@ module cbc3_pipeline
   (* C_WRITE_DEPTH_B = "512" *) 
   (* C_WRITE_MODE_A = "NO_CHANGE" *) 
   (* C_WRITE_MODE_B = "WRITE_FIRST" *) 
-  (* C_WRITE_WIDTH_A = "280" *) 
-  (* C_WRITE_WIDTH_B = "280" *) 
+  (* C_WRITE_WIDTH_A = "276" *) 
+  (* C_WRITE_WIDTH_B = "276" *) 
   (* C_XDEVICEFAMILY = "kintex7" *) 
   (* downgradeipidentifiedwarnings = "yes" *) 
   cbc3_pipeline_blk_mem_gen_v8_3_4 U0
@@ -146,8 +146,8 @@ module cbc3_pipeline
         .dbiterr(NLW_U0_dbiterr_UNCONNECTED),
         .deepsleep(1'b0),
         .dina(dina),
-        .dinb({1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0}),
-        .douta(NLW_U0_douta_UNCONNECTED[279:0]),
+        .dinb({1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0}),
+        .douta(NLW_U0_douta_UNCONNECTED[275:0]),
         .doutb(doutb),
         .eccpipece(1'b0),
         .ena(ena),
@@ -185,14 +185,14 @@ module cbc3_pipeline
         .s_axi_injectdbiterr(1'b0),
         .s_axi_injectsbiterr(1'b0),
         .s_axi_rdaddrecc(NLW_U0_s_axi_rdaddrecc_UNCONNECTED[8:0]),
-        .s_axi_rdata(NLW_U0_s_axi_rdata_UNCONNECTED[279:0]),
+        .s_axi_rdata(NLW_U0_s_axi_rdata_UNCONNECTED[275:0]),
         .s_axi_rid(NLW_U0_s_axi_rid_UNCONNECTED[3:0]),
         .s_axi_rlast(NLW_U0_s_axi_rlast_UNCONNECTED),
         .s_axi_rready(1'b0),
         .s_axi_rresp(NLW_U0_s_axi_rresp_UNCONNECTED[1:0]),
         .s_axi_rvalid(NLW_U0_s_axi_rvalid_UNCONNECTED),
         .s_axi_sbiterr(NLW_U0_s_axi_sbiterr_UNCONNECTED),
-        .s_axi_wdata({1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0}),
+        .s_axi_wdata({1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0,1'b0}),
         .s_axi_wlast(1'b0),
         .s_axi_wready(NLW_U0_s_axi_wready_UNCONNECTED),
         .s_axi_wstrb(1'b0),
@@ -204,6 +204,7 @@ module cbc3_pipeline
         .web(1'b0));
 endmodule
 
+(* ORIG_REF_NAME = "blk_mem_gen_generic_cstr" *) 
 module cbc3_pipeline_blk_mem_gen_generic_cstr
    (doutb,
     clkb,
@@ -214,22 +215,22 @@ module cbc3_pipeline_blk_mem_gen_generic_cstr
     addra,
     dina,
     wea);
-  output [279:0]doutb;
+  output [275:0]doutb;
   input clkb;
   input clka;
   input enb;
   input ena;
   input [8:0]addrb;
   input [8:0]addra;
-  input [279:0]dina;
+  input [275:0]dina;
   input [0:0]wea;
 
   wire [8:0]addra;
   wire [8:0]addrb;
   wire clka;
   wire clkb;
-  wire [279:0]dina;
-  wire [279:0]doutb;
+  wire [275:0]dina;
+  wire [275:0]doutb;
   wire ena;
   wire enb;
   wire [0:0]wea;
@@ -269,13 +270,14 @@ module cbc3_pipeline_blk_mem_gen_generic_cstr
         .addrb(addrb),
         .clka(clka),
         .clkb(clkb),
-        .dina(dina[279:216]),
-        .doutb(doutb[279:216]),
+        .dina(dina[275:216]),
+        .doutb(doutb[275:216]),
         .ena(ena),
         .enb(enb),
         .wea(wea));
 endmodule
 
+(* ORIG_REF_NAME = "blk_mem_gen_prim_width" *) 
 module cbc3_pipeline_blk_mem_gen_prim_width
    (doutb,
     clkb,
@@ -415,22 +417,22 @@ module cbc3_pipeline_blk_mem_gen_prim_width__parameterized2
     addra,
     dina,
     wea);
-  output [63:0]doutb;
+  output [59:0]doutb;
   input clkb;
   input clka;
   input enb;
   input ena;
   input [8:0]addrb;
   input [8:0]addra;
-  input [63:0]dina;
+  input [59:0]dina;
   input [0:0]wea;
 
   wire [8:0]addra;
   wire [8:0]addrb;
   wire clka;
   wire clkb;
-  wire [63:0]dina;
-  wire [63:0]doutb;
+  wire [59:0]dina;
+  wire [59:0]doutb;
   wire ena;
   wire enb;
   wire [0:0]wea;
@@ -447,6 +449,7 @@ module cbc3_pipeline_blk_mem_gen_prim_width__parameterized2
         .wea(wea));
 endmodule
 
+(* ORIG_REF_NAME = "blk_mem_gen_prim_wrapper" *) 
 module cbc3_pipeline_blk_mem_gen_prim_wrapper
    (doutb,
     clkb,
@@ -1207,16 +1210,20 @@ module cbc3_pipeline_blk_mem_gen_prim_wrapper__parameterized2
     addra,
     dina,
     wea);
-  output [63:0]doutb;
+  output [59:0]doutb;
   input clkb;
   input clka;
   input enb;
   input ena;
   input [8:0]addrb;
   input [8:0]addra;
-  input [63:0]dina;
+  input [59:0]dina;
   input [0:0]wea;
 
+  wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_21 ;
+  wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_37 ;
+  wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_53 ;
+  wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_69 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_85 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_86 ;
   wire \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_87 ;
@@ -1229,8 +1236,8 @@ module cbc3_pipeline_blk_mem_gen_prim_wrapper__parameterized2
   wire [8:0]addrb;
   wire clka;
   wire clkb;
-  wire [63:0]dina;
-  wire [63:0]doutb;
+  wire [59:0]dina;
+  wire [59:0]doutb;
   wire ena;
   wire enb;
   wire [0:0]wea;
@@ -1429,12 +1436,12 @@ module cbc3_pipeline_blk_mem_gen_prim_wrapper__parameterized2
         .CLKARDCLK(clkb),
         .CLKBWRCLK(clka),
         .DBITERR(\NLW_DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_DBITERR_UNCONNECTED ),
-        .DIADI(dina[31:0]),
-        .DIBDI(dina[63:32]),
+        .DIADI({1'b0,dina[29:15],1'b0,dina[14:0]}),
+        .DIBDI({1'b0,dina[59:45],1'b0,dina[44:30]}),
         .DIPADIP({1'b0,1'b0,1'b0,1'b0}),
         .DIPBDIP({1'b0,1'b0,1'b0,1'b0}),
-        .DOADO(doutb[31:0]),
-        .DOBDO(doutb[63:32]),
+        .DOADO({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_21 ,doutb[29:15],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_37 ,doutb[14:0]}),
+        .DOBDO({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_53 ,doutb[59:45],\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_69 ,doutb[44:30]}),
         .DOPADOP({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_85 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_86 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_87 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_88 }),
         .DOPBDOP({\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_89 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_90 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_91 ,\DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_92 }),
         .ECCPARITY(\NLW_DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_ECCPARITY_UNCONNECTED [7:0]),
@@ -1454,6 +1461,7 @@ module cbc3_pipeline_blk_mem_gen_prim_wrapper__parameterized2
         .WEBWE({wea,wea,wea,wea,wea,wea,wea,wea}));
 endmodule
 
+(* ORIG_REF_NAME = "blk_mem_gen_top" *) 
 module cbc3_pipeline_blk_mem_gen_top
    (doutb,
     clkb,
@@ -1464,22 +1472,22 @@ module cbc3_pipeline_blk_mem_gen_top
     addra,
     dina,
     wea);
-  output [279:0]doutb;
+  output [275:0]doutb;
   input clkb;
   input clka;
   input enb;
   input ena;
   input [8:0]addrb;
   input [8:0]addra;
-  input [279:0]dina;
+  input [275:0]dina;
   input [0:0]wea;
 
   wire [8:0]addra;
   wire [8:0]addrb;
   wire clka;
   wire clkb;
-  wire [279:0]dina;
-  wire [279:0]doutb;
+  wire [275:0]dina;
+  wire [275:0]doutb;
   wire ena;
   wire enb;
   wire [0:0]wea;
@@ -1503,7 +1511,7 @@ endmodule
 (* C_DISABLE_WARN_BHV_COLL = "0" *) (* C_DISABLE_WARN_BHV_RANGE = "0" *) (* C_ELABORATION_DIR = "./" *) 
 (* C_ENABLE_32BIT_ADDRESS = "0" *) (* C_EN_DEEPSLEEP_PIN = "0" *) (* C_EN_ECC_PIPE = "0" *) 
 (* C_EN_RDADDRA_CHG = "0" *) (* C_EN_RDADDRB_CHG = "0" *) (* C_EN_SAFETY_CKT = "0" *) 
-(* C_EN_SHUTDOWN_PIN = "0" *) (* C_EN_SLEEP_PIN = "0" *) (* C_EST_POWER_SUMMARY = "Estimated Power for IP     :     28.7092 mW" *) 
+(* C_EN_SHUTDOWN_PIN = "0" *) (* C_EN_SLEEP_PIN = "0" *) (* C_EST_POWER_SUMMARY = "Estimated Power for IP     :     28.5684 mW" *) 
 (* C_FAMILY = "kintex7" *) (* C_HAS_AXI_ID = "0" *) (* C_HAS_ENA = "1" *) 
 (* C_HAS_ENB = "1" *) (* C_HAS_INJECTERR = "0" *) (* C_HAS_MEM_OUTPUT_REGS_A = "0" *) 
 (* C_HAS_MEM_OUTPUT_REGS_B = "1" *) (* C_HAS_MUX_OUTPUT_REGS_A = "0" *) (* C_HAS_MUX_OUTPUT_REGS_B = "0" *) 
@@ -1512,15 +1520,15 @@ endmodule
 (* C_INITA_VAL = "0" *) (* C_INITB_VAL = "0" *) (* C_INIT_FILE = "cbc3_pipeline.mem" *) 
 (* C_INIT_FILE_NAME = "no_coe_file_loaded" *) (* C_INTERFACE_TYPE = "0" *) (* C_LOAD_INIT_FILE = "0" *) 
 (* C_MEM_TYPE = "1" *) (* C_MUX_PIPELINE_STAGES = "0" *) (* C_PRIM_TYPE = "1" *) 
-(* C_READ_DEPTH_A = "512" *) (* C_READ_DEPTH_B = "512" *) (* C_READ_WIDTH_A = "280" *) 
-(* C_READ_WIDTH_B = "280" *) (* C_RSTRAM_A = "0" *) (* C_RSTRAM_B = "0" *) 
+(* C_READ_DEPTH_A = "512" *) (* C_READ_DEPTH_B = "512" *) (* C_READ_WIDTH_A = "276" *) 
+(* C_READ_WIDTH_B = "276" *) (* C_RSTRAM_A = "0" *) (* C_RSTRAM_B = "0" *) 
 (* C_RST_PRIORITY_A = "CE" *) (* C_RST_PRIORITY_B = "CE" *) (* C_SIM_COLLISION_CHECK = "ALL" *) 
 (* C_USE_BRAM_BLOCK = "0" *) (* C_USE_BYTE_WEA = "0" *) (* C_USE_BYTE_WEB = "0" *) 
 (* C_USE_DEFAULT_DATA = "0" *) (* C_USE_ECC = "0" *) (* C_USE_SOFTECC = "0" *) 
 (* C_USE_URAM = "0" *) (* C_WEA_WIDTH = "1" *) (* C_WEB_WIDTH = "1" *) 
 (* C_WRITE_DEPTH_A = "512" *) (* C_WRITE_DEPTH_B = "512" *) (* C_WRITE_MODE_A = "NO_CHANGE" *) 
-(* C_WRITE_MODE_B = "WRITE_FIRST" *) (* C_WRITE_WIDTH_A = "280" *) (* C_WRITE_WIDTH_B = "280" *) 
-(* C_XDEVICEFAMILY = "kintex7" *) (* downgradeipidentifiedwarnings = "yes" *) 
+(* C_WRITE_MODE_B = "WRITE_FIRST" *) (* C_WRITE_WIDTH_A = "276" *) (* C_WRITE_WIDTH_B = "276" *) 
+(* C_XDEVICEFAMILY = "kintex7" *) (* ORIG_REF_NAME = "blk_mem_gen_v8_3_4" *) (* downgradeipidentifiedwarnings = "yes" *) 
 module cbc3_pipeline_blk_mem_gen_v8_3_4
    (clka,
     rsta,
@@ -1591,16 +1599,16 @@ module cbc3_pipeline_blk_mem_gen_v8_3_4
   input regcea;
   input [0:0]wea;
   input [8:0]addra;
-  input [279:0]dina;
-  output [279:0]douta;
+  input [275:0]dina;
+  output [275:0]douta;
   input clkb;
   input rstb;
   input enb;
   input regceb;
   input [0:0]web;
   input [8:0]addrb;
-  input [279:0]dinb;
-  output [279:0]doutb;
+  input [275:0]dinb;
+  output [275:0]doutb;
   input injectsbiterr;
   input injectdbiterr;
   input eccpipece;
@@ -1621,7 +1629,7 @@ module cbc3_pipeline_blk_mem_gen_v8_3_4
   input [1:0]s_axi_awburst;
   input s_axi_awvalid;
   output s_axi_awready;
-  input [279:0]s_axi_wdata;
+  input [275:0]s_axi_wdata;
   input [0:0]s_axi_wstrb;
   input s_axi_wlast;
   input s_axi_wvalid;
@@ -1638,7 +1646,7 @@ module cbc3_pipeline_blk_mem_gen_v8_3_4
   input s_axi_arvalid;
   output s_axi_arready;
   output [3:0]s_axi_rid;
-  output [279:0]s_axi_rdata;
+  output [275:0]s_axi_rdata;
   output [1:0]s_axi_rresp;
   output s_axi_rlast;
   output s_axi_rvalid;
@@ -1654,17 +1662,13 @@ module cbc3_pipeline_blk_mem_gen_v8_3_4
   wire [8:0]addrb;
   wire clka;
   wire clkb;
-  wire [279:0]dina;
-  wire [279:0]doutb;
+  wire [275:0]dina;
+  wire [275:0]doutb;
   wire ena;
   wire enb;
   wire [0:0]wea;
 
   assign dbiterr = \<const0> ;
-  assign douta[279] = \<const0> ;
-  assign douta[278] = \<const0> ;
-  assign douta[277] = \<const0> ;
-  assign douta[276] = \<const0> ;
   assign douta[275] = \<const0> ;
   assign douta[274] = \<const0> ;
   assign douta[273] = \<const0> ;
@@ -1971,10 +1975,6 @@ module cbc3_pipeline_blk_mem_gen_v8_3_4
   assign s_axi_rdaddrecc[2] = \<const0> ;
   assign s_axi_rdaddrecc[1] = \<const0> ;
   assign s_axi_rdaddrecc[0] = \<const0> ;
-  assign s_axi_rdata[279] = \<const0> ;
-  assign s_axi_rdata[278] = \<const0> ;
-  assign s_axi_rdata[277] = \<const0> ;
-  assign s_axi_rdata[276] = \<const0> ;
   assign s_axi_rdata[275] = \<const0> ;
   assign s_axi_rdata[274] = \<const0> ;
   assign s_axi_rdata[273] = \<const0> ;
@@ -2276,6 +2276,7 @@ module cbc3_pipeline_blk_mem_gen_v8_3_4
         .wea(wea));
 endmodule
 
+(* ORIG_REF_NAME = "blk_mem_gen_v8_3_4_synth" *) 
 module cbc3_pipeline_blk_mem_gen_v8_3_4_synth
    (doutb,
     clkb,
@@ -2286,22 +2287,22 @@ module cbc3_pipeline_blk_mem_gen_v8_3_4_synth
     addra,
     dina,
     wea);
-  output [279:0]doutb;
+  output [275:0]doutb;
   input clkb;
   input clka;
   input enb;
   input ena;
   input [8:0]addrb;
   input [8:0]addra;
-  input [279:0]dina;
+  input [275:0]dina;
   input [0:0]wea;
 
   wire [8:0]addra;
   wire [8:0]addrb;
   wire clka;
   wire clkb;
-  wire [279:0]dina;
-  wire [279:0]doutb;
+  wire [275:0]dina;
+  wire [275:0]doutb;
   wire ena;
   wire enb;
   wire [0:0]wea;

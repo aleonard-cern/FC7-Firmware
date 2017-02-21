@@ -65,10 +65,10 @@ begin
 --        end generate;
 --    end generate;
     
-    process(clk320)
+    process(clk40)
         -- variable for current and previous 40MHz clock states 
-        variable previous_clk : std_logic := '0'; 
-        variable current_clk : std_logic := '0';
+        --variable previous_clk : std_logic := '0'; 
+        --variable current_clk : std_logic := '0';
         constant flag_ones : std_logic_vector(NUM_CHIPS - 1 downto 0) := (others => '1'); 
         -- dummy nul vector for reseting output
         constant dummy : triggered_data_frame_r := (start => "00", latency_error => '0', buffer_overflow => '0', pipe_address => (others => '0'), l1_counter => (others => '0'), channels => (others => '0'));     
@@ -76,7 +76,7 @@ begin
         variable nDummys : integer := NUM_CHIPS;
 
     begin
-        if (rising_edge(clk320)) then
+        if (rising_edge(clk40)) then
             
             -- synchronous reset
             if (reset_i = '1') then
@@ -90,54 +90,33 @@ begin
             else
                 
                 -- save current and previous 40MHz clock states
-                previous_clk := current_clk;
-                current_clk := clk40;
+                --previous_clk := current_clk;
+                --current_clk := clk40;
                 
-                
---                for I in 0 to (NUM_CHIPS  - 1) loop
-                    
---                    if (triggered_data_frame_r_array_i(I).start = "11" and CBC_flag(I)= '0') then --even is top !
---                           trig_data_tmp(2*I) <=  triggered_data_frame_r_array_i(I).start &
---                                                  triggered_data_frame_r_array_i(I).pipe_address &
---                                                  trig_data_to_hb_even(I);    
-                           
---                           trig_data_tmp(2*I+1) <= triggered_data_frame_r_array_i(I).latency_error &
---                                                   triggered_data_frame_r_array_i(I).buffer_overflow &
---                                                   triggered_data_frame_r_array_i(I).l1_counter &
---                                                   trig_data_to_hb_odd(I);    
-                                                      
---                           CBC_flag(I) <= '1';
-                           
---                    elsif (CBC_flag = flag_ones and is_sent = '1') then
---                           CBC_flag(I) <= '0';
-                           
---                    end if;
-                    
---                end loop;
                 
                 -- on 40MHz clock rising edge
-                if (previous_clk = '0' and current_clk = '1') then
+                --if (previous_clk = '0' and current_clk = '1') then
                 
-                    -- if all CBC have sent triggered data (CBC_flag == ff) and there are still data to be sent
-                    if(cycle_for_sending > 0) then
-                        trig_data_to_hb_o <= triggered_data_frame_r_array_i(NUM_CHIPS - cycle_for_sending);
-                        cycle_for_sending := cycle_for_sending - 1;
-                        nDummys := NUM_CHIPS;
-                    --elsif (CBC_flag=flag_ones and cycle_for_sending = -1) then
-                    elsif (cycle_for_sending = 0 and nDummys<8) then
-                        trig_data_to_hb_o <= dummy;
-                        nDummys:=nDummys+1;
-                        --trig_data_tmp <= (others => (others=>'0')); 
-                        --is_sent <= '1';
-                        cycle_for_sending := NUM_CHIPS;
-                    else  
-                        is_sent <= '0';
-                        cycle_for_sending := NUM_CHIPS;
-                        trig_data_to_hb_o <= dummy;
-                        nDummys := NUM_CHIPS;
-                    end if;                   
+                -- if all CBC have sent triggered data (CBC_flag == ff) and there are still data to be sent
+                if(cycle_for_sending > 0) then
+                    trig_data_to_hb_o <= triggered_data_frame_r_array_i(NUM_CHIPS - cycle_for_sending);
+                    cycle_for_sending := cycle_for_sending - 1;
+                    nDummys := NUM_CHIPS;
+                --elsif (CBC_flag=flag_ones and cycle_for_sending = -1) then
+                elsif (cycle_for_sending = 0 and nDummys<8) then
+                    trig_data_to_hb_o <= dummy;
+                    nDummys:=nDummys+1;
+                    --trig_data_tmp <= (others => (others=>'0')); 
+                    --is_sent <= '1';
+                    cycle_for_sending := NUM_CHIPS;
+                else  
+                    is_sent <= '0';
+                    cycle_for_sending := NUM_CHIPS;
+                    trig_data_to_hb_o <= dummy;
+                    nDummys := NUM_CHIPS;
+                end if;                   
                     
-                end if;
+                --end if;
                 
             end if; --end reset condition
         end if;

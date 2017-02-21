@@ -38,7 +38,7 @@ Port (
     trigger_i : in std_logic;
     --trig_lat_i : in std_logic_vector(8 downto 0);
     data_i : in std_logic_vector(253 downto 0);
-    data_o : out std_logic_vector(279 downto 0)
+    data_o : out std_logic_vector(275 downto 0)
 );
 end trig_data_pipeline;
 
@@ -62,8 +62,8 @@ architecture Behavioral of trig_data_pipeline is
     --signal pipeline : pipeline_arr;
     signal l1_cnt : integer := 0;
     --signal tr_event : trig_event := (start_bits=>"00", error_bits=>"00", pipeline_address=>"000000000", l1_counter=>"000000000",cbc_data=>(others=>'0'), zeros=>"0000");
-    signal tr_event_in : std_logic_vector(279 downto 0);
-    signal tr_event_out : std_logic_vector(279 downto 0);
+    signal tr_event_in : std_logic_vector(275 downto 0);
+    signal tr_event_out : std_logic_vector(275 downto 0);
     signal l1_latency : integer := 2; 
   
    
@@ -78,7 +78,7 @@ begin
         dina => tr_event_in,
         clkb => clk_40,
         enb => r_enabled,
-        addrb => std_logic_vector(to_unsigned(pipeline_add_in-2,9)),
+        addrb => std_logic_vector(to_unsigned(pipeline_add_in-l1_latency,9)),
         doutb => tr_event_out
       );
   --  l1_latency <= to_integer(unsigned(trig_lat_i));
@@ -93,7 +93,7 @@ begin
             end if;
             ena<='1';
             w_enabled<=(others=>'1');
-            tr_event_in <= "0000" &
+            tr_event_in <=
                       data_i & 
                       std_logic_vector(to_unsigned(l1_cnt,9)) &
                       std_logic_vector(to_unsigned(pipeline_add_in,9))&

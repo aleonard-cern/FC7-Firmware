@@ -45,7 +45,7 @@ end trig_data;
 
 architecture Structural of trig_data is
 signal data_gen : std_logic_vector(253 downto 0);
-signal data_from_pipe : std_logic_vector(279 downto 0);
+signal data_from_pipe : std_logic_vector(275 downto 0);
 begin
     gen_data : entity generate_data port map (
         clk_40 => clk_40,
@@ -63,6 +63,7 @@ begin
         clk_320 => clk_320,
         reset_i => reset_i,
         data_in => data_from_pipe,
+        trigger_in => trigger_i,
         data_bit_out => data_bit_out,
         synch_bit_i => synch_bit_i
     );

@@ -1,10 +1,10 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2016.3 (lin64) Build 1682563 Mon Oct 10 19:07:26 MDT 2016
--- Date        : Fri Feb 17 19:24:57 2017
+-- Date        : Tue Feb 21 13:05:19 2017
 -- Host        : daq running 64-bit Linux Mint 17.2 Rafaela
--- Command     : write_vhdl -force -mode synth_stub -rename_top cbc3_pipeline -prefix
---               cbc3_pipeline_ cbc3_pipeline_stub.vhdl
+-- Command     : write_vhdl -force -mode synth_stub
+--               /home/daq/Documents/fc7_firmware/test/FC7-Firmware/fw/src/usr/phy/CBC3Emulator/cbc3_pipeline/cbc3_pipeline_stub.vhdl
 -- Design      : cbc3_pipeline
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7k420tffg1156-2
@@ -18,11 +18,11 @@ entity cbc3_pipeline is
     ena : in STD_LOGIC;
     wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     addra : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    dina : in STD_LOGIC_VECTOR ( 279 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 275 downto 0 );
     clkb : in STD_LOGIC;
     enb : in STD_LOGIC;
     addrb : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    doutb : out STD_LOGIC_VECTOR ( 279 downto 0 )
+    doutb : out STD_LOGIC_VECTOR ( 275 downto 0 )
   );
 
 end cbc3_pipeline;
@@ -31,7 +31,7 @@ architecture stub of cbc3_pipeline is
 attribute syn_black_box : boolean;
 attribute black_box_pad_pin : string;
 attribute syn_black_box of stub : architecture is true;
-attribute black_box_pad_pin of stub : architecture is "clka,ena,wea[0:0],addra[8:0],dina[279:0],clkb,enb,addrb[8:0],doutb[279:0]";
+attribute black_box_pad_pin of stub : architecture is "clka,ena,wea[0:0],addra[8:0],dina[275:0],clkb,enb,addrb[8:0],doutb[275:0]";
 attribute x_core_info : string;
 attribute x_core_info of stub : architecture is "blk_mem_gen_v8_3_4,Vivado 2016.3";
 begin

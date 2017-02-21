@@ -1,10 +1,10 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2016.3 (lin64) Build 1682563 Mon Oct 10 19:07:26 MDT 2016
--- Date        : Fri Feb 17 19:24:57 2017
+-- Date        : Tue Feb 21 13:05:19 2017
 -- Host        : daq running 64-bit Linux Mint 17.2 Rafaela
--- Command     : write_vhdl -force -mode funcsim -rename_top cbc3_pipeline -prefix
---               cbc3_pipeline_ cbc3_pipeline_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim
+--               /home/daq/Documents/fc7_firmware/test/FC7-Firmware/fw/src/usr/phy/CBC3Emulator/cbc3_pipeline/cbc3_pipeline_sim_netlist.vhdl
 -- Design      : cbc3_pipeline
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -26,6 +26,8 @@ entity cbc3_pipeline_blk_mem_gen_prim_wrapper is
     dina : in STD_LOGIC_VECTOR ( 71 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of cbc3_pipeline_blk_mem_gen_prim_wrapper : entity is "blk_mem_gen_prim_wrapper";
 end cbc3_pipeline_blk_mem_gen_prim_wrapper;
 
 architecture STRUCTURE of cbc3_pipeline_blk_mem_gen_prim_wrapper is
@@ -854,14 +856,14 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity \cbc3_pipeline_blk_mem_gen_prim_wrapper__parameterized2\ is
   port (
-    doutb : out STD_LOGIC_VECTOR ( 63 downto 0 );
+    doutb : out STD_LOGIC_VECTOR ( 59 downto 0 );
     clkb : in STD_LOGIC;
     clka : in STD_LOGIC;
     enb : in STD_LOGIC;
     ena : in STD_LOGIC;
     addrb : in STD_LOGIC_VECTOR ( 8 downto 0 );
     addra : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    dina : in STD_LOGIC_VECTOR ( 63 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 59 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
   attribute ORIG_REF_NAME : string;
@@ -869,6 +871,10 @@ entity \cbc3_pipeline_blk_mem_gen_prim_wrapper__parameterized2\ is
 end \cbc3_pipeline_blk_mem_gen_prim_wrapper__parameterized2\;
 
 architecture STRUCTURE of \cbc3_pipeline_blk_mem_gen_prim_wrapper__parameterized2\ is
+  signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_21\ : STD_LOGIC;
+  signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_37\ : STD_LOGIC;
+  signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_53\ : STD_LOGIC;
+  signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_69\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_85\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_86\ : STD_LOGIC;
   signal \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_87\ : STD_LOGIC;
@@ -1080,12 +1086,24 @@ begin
       CLKARDCLK => clkb,
       CLKBWRCLK => clka,
       DBITERR => \NLW_DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_DBITERR_UNCONNECTED\,
-      DIADI(31 downto 0) => dina(31 downto 0),
-      DIBDI(31 downto 0) => dina(63 downto 32),
+      DIADI(31) => '0',
+      DIADI(30 downto 16) => dina(29 downto 15),
+      DIADI(15) => '0',
+      DIADI(14 downto 0) => dina(14 downto 0),
+      DIBDI(31) => '0',
+      DIBDI(30 downto 16) => dina(59 downto 45),
+      DIBDI(15) => '0',
+      DIBDI(14 downto 0) => dina(44 downto 30),
       DIPADIP(3 downto 0) => B"0000",
       DIPBDIP(3 downto 0) => B"0000",
-      DOADO(31 downto 0) => doutb(31 downto 0),
-      DOBDO(31 downto 0) => doutb(63 downto 32),
+      DOADO(31) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_21\,
+      DOADO(30 downto 16) => doutb(29 downto 15),
+      DOADO(15) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_37\,
+      DOADO(14 downto 0) => doutb(14 downto 0),
+      DOBDO(31) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_53\,
+      DOBDO(30 downto 16) => doutb(59 downto 45),
+      DOBDO(15) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_69\,
+      DOBDO(14 downto 0) => doutb(44 downto 30),
       DOPADOP(3) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_85\,
       DOPADOP(2) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_86\,
       DOPADOP(1) => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_n_87\,
@@ -1134,6 +1152,8 @@ entity cbc3_pipeline_blk_mem_gen_prim_width is
     dina : in STD_LOGIC_VECTOR ( 71 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of cbc3_pipeline_blk_mem_gen_prim_width : entity is "blk_mem_gen_prim_width";
 end cbc3_pipeline_blk_mem_gen_prim_width;
 
 architecture STRUCTURE of cbc3_pipeline_blk_mem_gen_prim_width is
@@ -1227,14 +1247,14 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity \cbc3_pipeline_blk_mem_gen_prim_width__parameterized2\ is
   port (
-    doutb : out STD_LOGIC_VECTOR ( 63 downto 0 );
+    doutb : out STD_LOGIC_VECTOR ( 59 downto 0 );
     clkb : in STD_LOGIC;
     clka : in STD_LOGIC;
     enb : in STD_LOGIC;
     ena : in STD_LOGIC;
     addrb : in STD_LOGIC_VECTOR ( 8 downto 0 );
     addra : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    dina : in STD_LOGIC_VECTOR ( 63 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 59 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
   attribute ORIG_REF_NAME : string;
@@ -1249,8 +1269,8 @@ begin
       addrb(8 downto 0) => addrb(8 downto 0),
       clka => clka,
       clkb => clkb,
-      dina(63 downto 0) => dina(63 downto 0),
-      doutb(63 downto 0) => doutb(63 downto 0),
+      dina(59 downto 0) => dina(59 downto 0),
+      doutb(59 downto 0) => doutb(59 downto 0),
       ena => ena,
       enb => enb,
       wea(0) => wea(0)
@@ -1262,16 +1282,18 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity cbc3_pipeline_blk_mem_gen_generic_cstr is
   port (
-    doutb : out STD_LOGIC_VECTOR ( 279 downto 0 );
+    doutb : out STD_LOGIC_VECTOR ( 275 downto 0 );
     clkb : in STD_LOGIC;
     clka : in STD_LOGIC;
     enb : in STD_LOGIC;
     ena : in STD_LOGIC;
     addrb : in STD_LOGIC_VECTOR ( 8 downto 0 );
     addra : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    dina : in STD_LOGIC_VECTOR ( 279 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 275 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of cbc3_pipeline_blk_mem_gen_generic_cstr : entity is "blk_mem_gen_generic_cstr";
 end cbc3_pipeline_blk_mem_gen_generic_cstr;
 
 architecture STRUCTURE of cbc3_pipeline_blk_mem_gen_generic_cstr is
@@ -1318,8 +1340,8 @@ begin
       addrb(8 downto 0) => addrb(8 downto 0),
       clka => clka,
       clkb => clkb,
-      dina(63 downto 0) => dina(279 downto 216),
-      doutb(63 downto 0) => doutb(279 downto 216),
+      dina(59 downto 0) => dina(275 downto 216),
+      doutb(59 downto 0) => doutb(275 downto 216),
       ena => ena,
       enb => enb,
       wea(0) => wea(0)
@@ -1331,16 +1353,18 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity cbc3_pipeline_blk_mem_gen_top is
   port (
-    doutb : out STD_LOGIC_VECTOR ( 279 downto 0 );
+    doutb : out STD_LOGIC_VECTOR ( 275 downto 0 );
     clkb : in STD_LOGIC;
     clka : in STD_LOGIC;
     enb : in STD_LOGIC;
     ena : in STD_LOGIC;
     addrb : in STD_LOGIC_VECTOR ( 8 downto 0 );
     addra : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    dina : in STD_LOGIC_VECTOR ( 279 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 275 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of cbc3_pipeline_blk_mem_gen_top : entity is "blk_mem_gen_top";
 end cbc3_pipeline_blk_mem_gen_top;
 
 architecture STRUCTURE of cbc3_pipeline_blk_mem_gen_top is
@@ -1351,8 +1375,8 @@ begin
       addrb(8 downto 0) => addrb(8 downto 0),
       clka => clka,
       clkb => clkb,
-      dina(279 downto 0) => dina(279 downto 0),
-      doutb(279 downto 0) => doutb(279 downto 0),
+      dina(275 downto 0) => dina(275 downto 0),
+      doutb(275 downto 0) => doutb(275 downto 0),
       ena => ena,
       enb => enb,
       wea(0) => wea(0)
@@ -1364,16 +1388,18 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity cbc3_pipeline_blk_mem_gen_v8_3_4_synth is
   port (
-    doutb : out STD_LOGIC_VECTOR ( 279 downto 0 );
+    doutb : out STD_LOGIC_VECTOR ( 275 downto 0 );
     clkb : in STD_LOGIC;
     clka : in STD_LOGIC;
     enb : in STD_LOGIC;
     ena : in STD_LOGIC;
     addrb : in STD_LOGIC_VECTOR ( 8 downto 0 );
     addra : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    dina : in STD_LOGIC_VECTOR ( 279 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 275 downto 0 );
     wea : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of cbc3_pipeline_blk_mem_gen_v8_3_4_synth : entity is "blk_mem_gen_v8_3_4_synth";
 end cbc3_pipeline_blk_mem_gen_v8_3_4_synth;
 
 architecture STRUCTURE of cbc3_pipeline_blk_mem_gen_v8_3_4_synth is
@@ -1384,8 +1410,8 @@ begin
       addrb(8 downto 0) => addrb(8 downto 0),
       clka => clka,
       clkb => clkb,
-      dina(279 downto 0) => dina(279 downto 0),
-      doutb(279 downto 0) => doutb(279 downto 0),
+      dina(275 downto 0) => dina(275 downto 0),
+      doutb(275 downto 0) => doutb(275 downto 0),
       ena => ena,
       enb => enb,
       wea(0) => wea(0)
@@ -1403,16 +1429,16 @@ entity cbc3_pipeline_blk_mem_gen_v8_3_4 is
     regcea : in STD_LOGIC;
     wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     addra : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    dina : in STD_LOGIC_VECTOR ( 279 downto 0 );
-    douta : out STD_LOGIC_VECTOR ( 279 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 275 downto 0 );
+    douta : out STD_LOGIC_VECTOR ( 275 downto 0 );
     clkb : in STD_LOGIC;
     rstb : in STD_LOGIC;
     enb : in STD_LOGIC;
     regceb : in STD_LOGIC;
     web : in STD_LOGIC_VECTOR ( 0 to 0 );
     addrb : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    dinb : in STD_LOGIC_VECTOR ( 279 downto 0 );
-    doutb : out STD_LOGIC_VECTOR ( 279 downto 0 );
+    dinb : in STD_LOGIC_VECTOR ( 275 downto 0 );
+    doutb : out STD_LOGIC_VECTOR ( 275 downto 0 );
     injectsbiterr : in STD_LOGIC;
     injectdbiterr : in STD_LOGIC;
     eccpipece : in STD_LOGIC;
@@ -1433,7 +1459,7 @@ entity cbc3_pipeline_blk_mem_gen_v8_3_4 is
     s_axi_awburst : in STD_LOGIC_VECTOR ( 1 downto 0 );
     s_axi_awvalid : in STD_LOGIC;
     s_axi_awready : out STD_LOGIC;
-    s_axi_wdata : in STD_LOGIC_VECTOR ( 279 downto 0 );
+    s_axi_wdata : in STD_LOGIC_VECTOR ( 275 downto 0 );
     s_axi_wstrb : in STD_LOGIC_VECTOR ( 0 to 0 );
     s_axi_wlast : in STD_LOGIC;
     s_axi_wvalid : in STD_LOGIC;
@@ -1450,7 +1476,7 @@ entity cbc3_pipeline_blk_mem_gen_v8_3_4 is
     s_axi_arvalid : in STD_LOGIC;
     s_axi_arready : out STD_LOGIC;
     s_axi_rid : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    s_axi_rdata : out STD_LOGIC_VECTOR ( 279 downto 0 );
+    s_axi_rdata : out STD_LOGIC_VECTOR ( 275 downto 0 );
     s_axi_rresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     s_axi_rlast : out STD_LOGIC;
     s_axi_rvalid : out STD_LOGIC;
@@ -1508,7 +1534,7 @@ entity cbc3_pipeline_blk_mem_gen_v8_3_4 is
   attribute C_EN_SLEEP_PIN : integer;
   attribute C_EN_SLEEP_PIN of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 0;
   attribute C_EST_POWER_SUMMARY : string;
-  attribute C_EST_POWER_SUMMARY of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is "Estimated Power for IP     :     28.7092 mW";
+  attribute C_EST_POWER_SUMMARY of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is "Estimated Power for IP     :     28.5684 mW";
   attribute C_FAMILY : string;
   attribute C_FAMILY of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is "kintex7";
   attribute C_HAS_AXI_ID : integer;
@@ -1562,9 +1588,9 @@ entity cbc3_pipeline_blk_mem_gen_v8_3_4 is
   attribute C_READ_DEPTH_B : integer;
   attribute C_READ_DEPTH_B of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 512;
   attribute C_READ_WIDTH_A : integer;
-  attribute C_READ_WIDTH_A of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 280;
+  attribute C_READ_WIDTH_A of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 276;
   attribute C_READ_WIDTH_B : integer;
-  attribute C_READ_WIDTH_B of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 280;
+  attribute C_READ_WIDTH_B of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 276;
   attribute C_RSTRAM_A : integer;
   attribute C_RSTRAM_A of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 0;
   attribute C_RSTRAM_B : integer;
@@ -1602,11 +1628,13 @@ entity cbc3_pipeline_blk_mem_gen_v8_3_4 is
   attribute C_WRITE_MODE_B : string;
   attribute C_WRITE_MODE_B of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is "WRITE_FIRST";
   attribute C_WRITE_WIDTH_A : integer;
-  attribute C_WRITE_WIDTH_A of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 280;
+  attribute C_WRITE_WIDTH_A of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 276;
   attribute C_WRITE_WIDTH_B : integer;
-  attribute C_WRITE_WIDTH_B of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 280;
+  attribute C_WRITE_WIDTH_B of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is 276;
   attribute C_XDEVICEFAMILY : string;
   attribute C_XDEVICEFAMILY of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is "kintex7";
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is "blk_mem_gen_v8_3_4";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of cbc3_pipeline_blk_mem_gen_v8_3_4 : entity is "yes";
 end cbc3_pipeline_blk_mem_gen_v8_3_4;
@@ -1615,10 +1643,6 @@ architecture STRUCTURE of cbc3_pipeline_blk_mem_gen_v8_3_4 is
   signal \<const0>\ : STD_LOGIC;
 begin
   dbiterr <= \<const0>\;
-  douta(279) <= \<const0>\;
-  douta(278) <= \<const0>\;
-  douta(277) <= \<const0>\;
-  douta(276) <= \<const0>\;
   douta(275) <= \<const0>\;
   douta(274) <= \<const0>\;
   douta(273) <= \<const0>\;
@@ -1925,10 +1949,6 @@ begin
   s_axi_rdaddrecc(2) <= \<const0>\;
   s_axi_rdaddrecc(1) <= \<const0>\;
   s_axi_rdaddrecc(0) <= \<const0>\;
-  s_axi_rdata(279) <= \<const0>\;
-  s_axi_rdata(278) <= \<const0>\;
-  s_axi_rdata(277) <= \<const0>\;
-  s_axi_rdata(276) <= \<const0>\;
   s_axi_rdata(275) <= \<const0>\;
   s_axi_rdata(274) <= \<const0>\;
   s_axi_rdata(273) <= \<const0>\;
@@ -2226,8 +2246,8 @@ inst_blk_mem_gen: entity work.cbc3_pipeline_blk_mem_gen_v8_3_4_synth
       addrb(8 downto 0) => addrb(8 downto 0),
       clka => clka,
       clkb => clkb,
-      dina(279 downto 0) => dina(279 downto 0),
-      doutb(279 downto 0) => doutb(279 downto 0),
+      dina(275 downto 0) => dina(275 downto 0),
+      doutb(275 downto 0) => doutb(275 downto 0),
       ena => ena,
       enb => enb,
       wea(0) => wea(0)
@@ -2243,11 +2263,11 @@ entity cbc3_pipeline is
     ena : in STD_LOGIC;
     wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     addra : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    dina : in STD_LOGIC_VECTOR ( 279 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 275 downto 0 );
     clkb : in STD_LOGIC;
     enb : in STD_LOGIC;
     addrb : in STD_LOGIC_VECTOR ( 8 downto 0 );
-    doutb : out STD_LOGIC_VECTOR ( 279 downto 0 )
+    doutb : out STD_LOGIC_VECTOR ( 275 downto 0 )
   );
   attribute NotValidForBitStream : boolean;
   attribute NotValidForBitStream of cbc3_pipeline : entity is true;
@@ -2272,12 +2292,12 @@ architecture STRUCTURE of cbc3_pipeline is
   signal NLW_U0_s_axi_sbiterr_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_s_axi_wready_UNCONNECTED : STD_LOGIC;
   signal NLW_U0_sbiterr_UNCONNECTED : STD_LOGIC;
-  signal NLW_U0_douta_UNCONNECTED : STD_LOGIC_VECTOR ( 279 downto 0 );
+  signal NLW_U0_douta_UNCONNECTED : STD_LOGIC_VECTOR ( 275 downto 0 );
   signal NLW_U0_rdaddrecc_UNCONNECTED : STD_LOGIC_VECTOR ( 8 downto 0 );
   signal NLW_U0_s_axi_bid_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal NLW_U0_s_axi_bresp_UNCONNECTED : STD_LOGIC_VECTOR ( 1 downto 0 );
   signal NLW_U0_s_axi_rdaddrecc_UNCONNECTED : STD_LOGIC_VECTOR ( 8 downto 0 );
-  signal NLW_U0_s_axi_rdata_UNCONNECTED : STD_LOGIC_VECTOR ( 279 downto 0 );
+  signal NLW_U0_s_axi_rdata_UNCONNECTED : STD_LOGIC_VECTOR ( 275 downto 0 );
   signal NLW_U0_s_axi_rid_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal NLW_U0_s_axi_rresp_UNCONNECTED : STD_LOGIC_VECTOR ( 1 downto 0 );
   attribute C_ADDRA_WIDTH : integer;
@@ -2327,7 +2347,7 @@ architecture STRUCTURE of cbc3_pipeline is
   attribute C_EN_SLEEP_PIN : integer;
   attribute C_EN_SLEEP_PIN of U0 : label is 0;
   attribute C_EST_POWER_SUMMARY : string;
-  attribute C_EST_POWER_SUMMARY of U0 : label is "Estimated Power for IP     :     28.7092 mW";
+  attribute C_EST_POWER_SUMMARY of U0 : label is "Estimated Power for IP     :     28.5684 mW";
   attribute C_FAMILY : string;
   attribute C_FAMILY of U0 : label is "kintex7";
   attribute C_HAS_AXI_ID : integer;
@@ -2381,9 +2401,9 @@ architecture STRUCTURE of cbc3_pipeline is
   attribute C_READ_DEPTH_B : integer;
   attribute C_READ_DEPTH_B of U0 : label is 512;
   attribute C_READ_WIDTH_A : integer;
-  attribute C_READ_WIDTH_A of U0 : label is 280;
+  attribute C_READ_WIDTH_A of U0 : label is 276;
   attribute C_READ_WIDTH_B : integer;
-  attribute C_READ_WIDTH_B of U0 : label is 280;
+  attribute C_READ_WIDTH_B of U0 : label is 276;
   attribute C_RSTRAM_A : integer;
   attribute C_RSTRAM_A of U0 : label is 0;
   attribute C_RSTRAM_B : integer;
@@ -2421,9 +2441,9 @@ architecture STRUCTURE of cbc3_pipeline is
   attribute C_WRITE_MODE_B : string;
   attribute C_WRITE_MODE_B of U0 : label is "WRITE_FIRST";
   attribute C_WRITE_WIDTH_A : integer;
-  attribute C_WRITE_WIDTH_A of U0 : label is 280;
+  attribute C_WRITE_WIDTH_A of U0 : label is 276;
   attribute C_WRITE_WIDTH_B : integer;
-  attribute C_WRITE_WIDTH_B of U0 : label is 280;
+  attribute C_WRITE_WIDTH_B of U0 : label is 276;
   attribute C_XDEVICEFAMILY : string;
   attribute C_XDEVICEFAMILY of U0 : label is "kintex7";
   attribute downgradeipidentifiedwarnings of U0 : label is "yes";
@@ -2436,10 +2456,10 @@ U0: entity work.cbc3_pipeline_blk_mem_gen_v8_3_4
       clkb => clkb,
       dbiterr => NLW_U0_dbiterr_UNCONNECTED,
       deepsleep => '0',
-      dina(279 downto 0) => dina(279 downto 0),
-      dinb(279 downto 0) => B"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-      douta(279 downto 0) => NLW_U0_douta_UNCONNECTED(279 downto 0),
-      doutb(279 downto 0) => doutb(279 downto 0),
+      dina(275 downto 0) => dina(275 downto 0),
+      dinb(275 downto 0) => B"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      douta(275 downto 0) => NLW_U0_douta_UNCONNECTED(275 downto 0),
+      doutb(275 downto 0) => doutb(275 downto 0),
       eccpipece => '0',
       ena => ena,
       enb => enb,
@@ -2476,14 +2496,14 @@ U0: entity work.cbc3_pipeline_blk_mem_gen_v8_3_4
       s_axi_injectdbiterr => '0',
       s_axi_injectsbiterr => '0',
       s_axi_rdaddrecc(8 downto 0) => NLW_U0_s_axi_rdaddrecc_UNCONNECTED(8 downto 0),
-      s_axi_rdata(279 downto 0) => NLW_U0_s_axi_rdata_UNCONNECTED(279 downto 0),
+      s_axi_rdata(275 downto 0) => NLW_U0_s_axi_rdata_UNCONNECTED(275 downto 0),
       s_axi_rid(3 downto 0) => NLW_U0_s_axi_rid_UNCONNECTED(3 downto 0),
       s_axi_rlast => NLW_U0_s_axi_rlast_UNCONNECTED,
       s_axi_rready => '0',
       s_axi_rresp(1 downto 0) => NLW_U0_s_axi_rresp_UNCONNECTED(1 downto 0),
       s_axi_rvalid => NLW_U0_s_axi_rvalid_UNCONNECTED,
       s_axi_sbiterr => NLW_U0_s_axi_sbiterr_UNCONNECTED,
-      s_axi_wdata(279 downto 0) => B"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      s_axi_wdata(275 downto 0) => B"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       s_axi_wlast => '0',
       s_axi_wready => NLW_U0_s_axi_wready_UNCONNECTED,
       s_axi_wstrb(0) => '0',
