@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_user_core_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="cbc3_emulator_package" />
+            <top_module name="glbl" />
+            <top_module name="ipbus" />
+            <top_module name="system_package" />
+            <top_module name="tb_user_core" />
+            <top_module name="user_package" />
+            <top_module name="user_version_package" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="4998389870fs"></ZoomStartTime>
+      <ZoomEndTime time="5101800656fs"></ZoomEndTime>
+      <Cursor1Time time="5015625000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="257"></NameColumnWidth>
+      <ValueColumnWidth column_width="574"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="46" />
+   <wvobject type="logic" fp_name="/tb_user_core/fabric_clk_pre_buf">
+      <obj_property name="ElementShortName">fabric_clk_pre_buf</obj_property>
+      <obj_property name="ObjectShortName">fabric_clk_pre_buf</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/fabric_clk">
+      <obj_property name="ElementShortName">fabric_clk</obj_property>
+      <obj_property name="ObjectShortName">fabric_clk</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/cmd_reply">
+      <obj_property name="ElementShortName">cmd_reply</obj_property>
+      <obj_property name="ObjectShortName">cmd_reply</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/stub_to_hb">
+      <obj_property name="ElementShortName">stub_to_hb[0:0][0:0]</obj_property>
+      <obj_property name="ObjectShortName">stub_to_hb[0:0][0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/trig_data_to_hb">
+      <obj_property name="ElementShortName">trig_data_to_hb[0:0]</obj_property>
+      <obj_property name="ObjectShortName">trig_data_to_hb[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/fast_command_to_phy">
+      <obj_property name="ElementShortName">fast_command_to_phy</obj_property>
+      <obj_property name="ObjectShortName">fast_command_to_phy</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/scl_io">
+      <obj_property name="ElementShortName">scl_io[0:0]</obj_property>
+      <obj_property name="ObjectShortName">scl_io[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/sda_io">
+      <obj_property name="ElementShortName">sda_io[0:0]</obj_property>
+      <obj_property name="ObjectShortName">sda_io[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/cmd_fast">
+      <obj_property name="ElementShortName">cmd_fast</obj_property>
+      <obj_property name="ObjectShortName">cmd_fast</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/trigger_data_fromCBC">
+      <obj_property name="ElementShortName">trigger_data_fromCBC[0:0][0:0]</obj_property>
+      <obj_property name="ObjectShortName">trigger_data_fromCBC[0:0][0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/stub_data_fromCBC">
+      <obj_property name="ElementShortName">stub_data_fromCBC[0:0][0:0]</obj_property>
+      <obj_property name="ObjectShortName">stub_data_fromCBC[0:0][0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/sda_miso">
+      <obj_property name="ElementShortName">sda_miso[0:0]</obj_property>
+      <obj_property name="ObjectShortName">sda_miso[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/sda_mosi">
+      <obj_property name="ElementShortName">sda_mosi[0:0]</obj_property>
+      <obj_property name="ObjectShortName">sda_mosi[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/scl_mosi">
+      <obj_property name="ElementShortName">scl_mosi[0:0]</obj_property>
+      <obj_property name="ObjectShortName">scl_mosi[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/clk_40MHz">
+      <obj_property name="ElementShortName">clk_40MHz</obj_property>
+      <obj_property name="ObjectShortName">clk_40MHz</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/clk_40MHz_forMMCM">
+      <obj_property name="ElementShortName">clk_40MHz_forMMCM</obj_property>
+      <obj_property name="ObjectShortName">clk_40MHz_forMMCM</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/slow_control_req_i">
+      <obj_property name="ElementShortName">slow_control_req_i</obj_property>
+      <obj_property name="ObjectShortName">slow_control_req_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_user_core/clk40_period">
+      <obj_property name="ElementShortName">clk40_period</obj_property>
+      <obj_property name="ObjectShortName">clk40_period</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_user_core/phy_block/\gen_i2c(0)\/phy_i2c_wrapper_inst/state">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_user_core/phy_block/\gen_i2c(0)\/phy_i2c_wrapper_inst/phy_i2c_master_inst/state">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/i2c/chip_address_cnt">
+      <obj_property name="ElementShortName">chip_address_cnt</obj_property>
+      <obj_property name="ObjectShortName">chip_address_cnt</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/i2c/state">
+      <obj_property name="ElementShortName">state</obj_property>
+      <obj_property name="ObjectShortName">state</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/i2c/scl_i">
+      <obj_property name="ElementShortName">scl_i</obj_property>
+      <obj_property name="ObjectShortName">scl_i</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/i2c/sda_mosi_i">
+      <obj_property name="ElementShortName">sda_mosi_i</obj_property>
+      <obj_property name="ObjectShortName">sda_mosi_i</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/i2c/clk_ref_i">
+      <obj_property name="ElementShortName">clk_ref_i</obj_property>
+      <obj_property name="ObjectShortName">clk_ref_i</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/fast_cmd/fast_cmd_i">
+      <obj_property name="ElementShortName">fast_cmd_i</obj_property>
+      <obj_property name="ObjectShortName">fast_cmd_i</obj_property>
+      <obj_property name="CustomSignalColor">#800080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/clk_40">
+      <obj_property name="ElementShortName">clk_40</obj_property>
+      <obj_property name="ObjectShortName">clk_40</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/i2c/reset_i">
+      <obj_property name="ElementShortName">reset_i</obj_property>
+      <obj_property name="ObjectShortName">reset_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/fast_cmd/fast_reset_o">
+      <obj_property name="ElementShortName">fast_reset_o</obj_property>
+      <obj_property name="ObjectShortName">fast_reset_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/fast_cmd/trigger_o">
+      <obj_property name="ElementShortName">trigger_o</obj_property>
+      <obj_property name="ObjectShortName">trigger_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/fast_cmd/test_pulse_trigger_o">
+      <obj_property name="ElementShortName">test_pulse_trigger_o</obj_property>
+      <obj_property name="ObjectShortName">test_pulse_trigger_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/fast_cmd/orbit_reset_o">
+      <obj_property name="ElementShortName">orbit_reset_o</obj_property>
+      <obj_property name="ObjectShortName">orbit_reset_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/mmcm_ready">
+      <obj_property name="ElementShortName">mmcm_ready</obj_property>
+      <obj_property name="ObjectShortName">mmcm_ready</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/fast_cmd/fast_cmd_i">
+      <obj_property name="ElementShortName">fast_cmd_i</obj_property>
+      <obj_property name="ObjectShortName">fast_cmd_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/clk_320MHz">
+      <obj_property name="ElementShortName">clk_320MHz</obj_property>
+      <obj_property name="ObjectShortName">clk_320MHz</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/gen_data/data_tmp">
+      <obj_property name="ElementShortName">data_tmp[253:0]</obj_property>
+      <obj_property name="ObjectShortName">data_tmp[253:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/tr_event_out">
+      <obj_property name="ElementShortName">tr_event_out[279:0]</obj_property>
+      <obj_property name="ObjectShortName">tr_event_out[279:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/clk_40">
+      <obj_property name="ElementShortName">clk_40</obj_property>
+      <obj_property name="ObjectShortName">clk_40</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/r_enabled">
+      <obj_property name="ElementShortName">r_enabled</obj_property>
+      <obj_property name="ObjectShortName">r_enabled</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/l1_cnt">
+      <obj_property name="ElementShortName">l1_cnt</obj_property>
+      <obj_property name="ObjectShortName">l1_cnt</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/pipeline_add_in">
+      <obj_property name="ElementShortName">pipeline_add_in</obj_property>
+      <obj_property name="ObjectShortName">pipeline_add_in</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/data_o">
+      <obj_property name="ElementShortName">data_o[279:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[279:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/pipeline_bram/inst/addra">
+      <obj_property name="ElementShortName">addra[8:0]</obj_property>
+      <obj_property name="ObjectShortName">addra[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/pipeline_bram/inst/addrb">
+      <obj_property name="ElementShortName">addrb[8:0]</obj_property>
+      <obj_property name="ObjectShortName">addrb[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_user_core/CBC3_emulator/\GEN_HYBRIDS(0)\/\GEN_CBCS(0)\/CBC3/trig_data/pipeline/pipeline_bram/dina">
+      <obj_property name="ElementShortName">dina[279:0]</obj_property>
+      <obj_property name="ObjectShortName">dina[279:0]</obj_property>
+   </wvobject>
+</wave_config>

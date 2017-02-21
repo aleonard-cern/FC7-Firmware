@@ -56,8 +56,8 @@
 //  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 //   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 //----------------------------------------------------------------------------
-// clk_out1____40.000______0.000______50.0______247.096____196.976
-// clk_out2___320.000______0.000______50.0______151.082____196.976
+// clk_out40____40.000______0.000______50.0______247.096____196.976
+// clk_out320___320.000______0.000______50.0______151.082____196.976
 //
 //----------------------------------------------------------------------------
 // Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -71,8 +71,8 @@
 module mmcm 
  (
   // Clock out ports
-  output        clk_out1,
-  output        clk_out2,
+  output        clk_out40,
+  output        clk_out320,
   // Status and control signals
   input         reset,
   output        locked,
@@ -83,8 +83,8 @@ module mmcm
   mmcm_clk_wiz inst
   (
   // Clock out ports  
-  .clk_out1(clk_out1),
-  .clk_out2(clk_out2),
+  .clk_out40(clk_out40),
+  .clk_out320(clk_out320),
   // Status and control signals               
   .reset(reset), 
   .locked(locked),

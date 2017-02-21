@@ -12,6 +12,8 @@ use work.user_version_package.all;
 library unisim;
 use unisim.vcomponents.all;
 
+use work.cbc3_emulator_package.all;
+
 entity user_core is 
 port
 (
@@ -159,24 +161,37 @@ architecture usr of user_core is
     signal fabric_clk               : std_logic;
     --===================================--
     
-    signal clk_40MHz : std_logic;
+    
+    signal mmcm_ready :std_logic;
     signal clk_320MHz : std_logic;
+    signal clk_40MHz : std_logic;
+    
     
     signal cmd_reply : cmd_rbus;
-    signal stub_to_hb : stub_data_to_hb_t_array(1 to 1);
-    signal trig_data_to_hb : trig_data_to_hb_t_array(0 to NUM_HYBRIDS-1);
-    signal fast_command_to_phy : cmd_fastbus;
+    signal stub_to_hb : stub_data_to_hb_t_array(0 to NUM_HYBRIDS-1);
+    signal trig_data_to_hb : triggered_data_frame_r_array(0 to NUM_HYBRIDS-1);
+    signal fast_command_to_phy : cmd_fastbus := (fast_reset=>'0', trigger=>'0', test_pulse_trigger=>'0', orbit_reset=>'1');
 
     signal scl_io  : std_logic_vector(0 to NUM_HYBRIDS-1);
     signal sda_io  : std_logic_vector(0 to NUM_HYBRIDS-1);
     
+    signal cmd_fast : std_logic;
+    signal trigger_data_fromCBC : trig_data_from_fe_t_array(0 to NUM_HYBRIDS-1);
+    signal stub_data_fromCBC : stub_lines_r_array_array(0 to NUM_HYBRIDS-1);
+    
+    signal sda_miso : std_logic_vector(0 to NUM_HYBRIDS-1);
+    signal sda_mosi : std_logic_vector(0 to NUM_HYBRIDS-1);
+    signal scl_mosi : std_logic_vector(0 to NUM_HYBRIDS-1);
+    
+    attribute keep: boolean;
+    attribute keep of clk_320MHz: signal is true;
 begin
 
     --===========================================--
     -- other clocks
     --===========================================--
     fclk_ibuf:      ibufgds     port map (i => fabric_clk_p, ib => fabric_clk_n, o => fabric_clk_pre_buf);
-    fclk_bufg:      bufg        port map (i => fabric_clk_pre_buf,               o => fabric_clk);
+    --fclk_bufg:      bufg        port map (i => fabric_clk_pre_buf,               o => fabric_clk);
     --===========================================--
 
     --===================================--
@@ -243,35 +258,60 @@ begin
     port map ( 
     
        -- Clock in ports
-       clk_in1 => fabric_clk,
+       clk_in1 => fabric_clk_pre_buf,
       -- Clock out ports  
-       clk_out1 => clk_40MHz,
-       clk_out2 => clk_320MHz,
+       clk_out40 => clk_40MHz,
+       clk_out320 => clk_320MHz,
       -- Status and control signals                
        reset => '0',
-       locked => open            
+       locked => mmcm_ready            
     );
      
-     
+     CBC3_emulator : entity work.CBC3_generator
+     port map(
+        --scl_io => scl_io,
+        --sda_io => sda_io,
+        reset_i => '0',
+ 
+        clk320_i =>  clk_320MHz,
+        cmd_fast_i => cmd_fast,
+        trig_data_o => trigger_data_fromCBC,
+        stub_data_o => stub_data_fromCBC,
+        sda_miso_o_top => sda_miso,
+        sda_mosi_i_top => sda_mosi,
+        scl_i => scl_mosi,
+        clk40_test_i => clk_40MHz,
+        mmcm_ready_i => mmcm_ready
+ 
+--       -- clk_40_CBC3_o => clk_40_CBC3
+--        --clk40_i => clk_40MHz
+--        led2_red_o => led2_red_o,
+--        led1_red_o => led1_red_o,
+--       -- led1_blue_o => led1_blue_o,
+--       -- led1_green_o => led1_green_o,
+--        clk40_test_i => clk_40_i
+ 
+   );
+
      
     phy_block: entity work.phy_core
     --===================================--
     generic map
     (
-        NUM_HYBRID => NUM_HYBRIDS
+        NUM_HYBRIDS => NUM_HYBRIDS
     )
     port map
     (
-        clk_40              => clk_40MHz,
-        clk_320_i           => clk_320MHz,
-        clk_320_o           => open,
+        clk_40              => clk_40MHz, --mmcm
+        clk_320_i           => clk_320MHz, --mmcm
+        clk_320_o           => usrled1_g,
         reset_i             => '0',
 
         -- fast command input bus
-        cmd_fast_i          => fast_command_to_phy,
+        cmd_fast_i          => fast_command_to_phy, --0001 
     
         -- fast command serial output
-        cmd_fast_o          => open,
+        cmd_fast_o          => cmd_fast, 
 
         -- hybrid block interface for triggered data
         trig_data_o         => trig_data_to_hb,
@@ -280,23 +320,32 @@ begin
         stub_data_o         => stub_to_hb,
     
         -- triggered data lines from CBC
-        trig_data_i         => (others => (others => '1')),
+        trig_data_i         => trigger_data_fromCBC,
 
         -- stubs lines from CBC
-        stub_data_i         => (others => (others => (dp1 => '1', dp2 => '1', dp3 => '1', dp4 => '1', dp5 => '1'))),
+        stub_data_i         => stub_data_fromCBC,
     
         -- slow control command from command generator
-        cmd_request_i       => (cmd_strobe => '0', cmd_hybrid_id => (others => '0'), cmd_chip_id => (others => '0'), cmd_page => '0', cmd_read => '0', cmd_register => (others => '0'), cmd_data => (others => '0'), cmd_write_mask => (others => '0')),
+        cmd_request_i       => (cmd_strobe => '1', cmd_hybrid_id => (others => '0'), cmd_chip_id => (others => '0'), cmd_page => '0', cmd_read => '0', cmd_register => (others => '0'), cmd_data => (others => '0'), cmd_write_mask => (others => '0')),
     
         -- slow control response to command generator
         cmd_reply_o         => cmd_reply,
         
-        scl_io => scl_io,
-        sda_io => sda_io
+        sda_miso_i => sda_miso,
+        sda_mosi_o => sda_mosi,
+        scl_o => scl_mosi,
+        mmcm_ready_i => mmcm_ready
+
+        
+--        scl_io => scl_io,
+--        sda_io => sda_io
     );        
---    fmc_l8_la_p(33) <= cmd_reply.cmd_strobe;
---    fmc_l8_la_p(32 downto 25) <= cmd_reply.cmd_data;
---    fmc_l8_la_p(24) <= cmd_reply.cmd_err;
+    usrled1_r <= sda_miso(0);
+    fmc_l8_la_p(32 downto 25) <= cmd_reply.cmd_data;
+    usrled2_r <= cmd_reply.cmd_err;
+    usrled2_g <= trig_data_to_hb(0).latency_error;
+    usrled1_b <= stub_to_hb(0)(0).stub1(0);
+    usrled2_b <= cmd_fast;
     --===================================--
     
     --===================================--

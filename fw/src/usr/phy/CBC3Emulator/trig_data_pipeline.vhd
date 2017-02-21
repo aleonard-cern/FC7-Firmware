@@ -52,27 +52,53 @@ architecture Behavioral of trig_data_pipeline is
         cbc_data : std_logic_vector(253 downto 0); 
         zeros : std_logic_vector (3 downto 0);
     end record; 
-    type pipeline_arr is array (511 downto 0) of trig_event;
+    --type pipeline_arr is array (5 downto 0) of trig_event;
   
     signal pipeline_add_in : integer := 0;
 
-    signal pipeline : pipeline_arr;
+    signal w_enabled: std_logic_vector(0 downto 0) := (others=>'0');
+    signal ena: std_logic;
+    signal r_enabled: std_logic;
+    --signal pipeline : pipeline_arr;
     signal l1_cnt : integer := 0;
-    signal tr_event : trig_event := (start_bits=>"00", error_bits=>"00", pipeline_address=>"000000000", l1_counter=>"000000000",cbc_data=>(others=>'0'), zeros=>"0000");
+    --signal tr_event : trig_event := (start_bits=>"00", error_bits=>"00", pipeline_address=>"000000000", l1_counter=>"000000000",cbc_data=>(others=>'0'), zeros=>"0000");
+    signal tr_event_in : std_logic_vector(279 downto 0);
+    signal tr_event_out : std_logic_vector(279 downto 0);
     signal l1_latency : integer := 2; 
-     
+  
+   
 begin
+
+      pipeline_bram : entity work.cbc3_pipeline
+      PORT MAP (
+        clka => clk_40,
+        ena => ena,
+        wea => w_enabled,
+        addra => std_logic_vector(to_unsigned(pipeline_add_in,9)),
+        dina => tr_event_in,
+        clkb => clk_40,
+        enb => r_enabled,
+        addrb => std_logic_vector(to_unsigned(pipeline_add_in-2,9)),
+        doutb => tr_event_out
+      );
   --  l1_latency <= to_integer(unsigned(trig_lat_i));
     -- writing to the pipeline
     write_to_pipe: process (clk_40)
     begin
         if (rising_edge(clk_40)) then
             if (reset_i='1') then
-                tr_event <= (start_bits=>"00", error_bits=>"00", pipeline_address=>"000000000", l1_counter=>"000000000",cbc_data=>(others=>'0'), zeros=>"0000");
+                --tr_event <= (start_bits=>"00", error_bits=>"00", pipeline_address=>"000000000", l1_counter=>"000000000",cbc_data=>(others=>'0'), zeros=>"0000");
+                tr_event_in <=(others=>'0');
                 pipeline_add_in <= 0;
             end if;
-            tr_event <=(start_bits=>"11", error_bits=>"00", pipeline_address=>std_logic_vector(to_unsigned(pipeline_add_in,9)), l1_counter=>std_logic_vector(to_unsigned(l1_cnt,9)),cbc_data=>data_i, zeros=>"0000");
-            pipeline(pipeline_add_in)<= tr_event;
+            ena<='1';
+            w_enabled<=(others=>'1');
+            tr_event_in <= "0000" &
+                      data_i & 
+                      std_logic_vector(to_unsigned(l1_cnt,9)) &
+                      std_logic_vector(to_unsigned(pipeline_add_in,9))&
+                      "00" & 
+                      "11";
             if (pipeline_add_in+1=512) then
                 pipeline_add_in<=0;
             else
@@ -85,33 +111,23 @@ begin
     read_from_pipe: process(clk_40)
     variable pipeline_add_out : integer := 0;
     begin
-        if (rising_edge(clk_40)) then   
+        if (rising_edge(clk_40)) then
+            r_enabled<='1';
             if (reset_i='1') then
                 data_o <= (others=>'0');
                 l1_cnt<=0; 
-                pipeline_add_out:=0;
+                --pipeline_add_out:=0;
             elsif (trigger_i='1') then
-                -- trigger latency
-                if (pipeline_add_in<l1_latency) then
-                    pipeline_add_out := 512-l1_latency+pipeline_add_in;
-                else
-                    pipeline_add_out := pipeline_add_in-l1_latency;
-                end if;
-                -- output data
-                  data_o <= pipeline(pipeline_add_out).zeros &
-                            pipeline(pipeline_add_out).cbc_data & 
-                            std_logic_vector(to_unsigned(l1_cnt,9)) &
-                            pipeline(pipeline_add_out).pipeline_address &
-                            pipeline(pipeline_add_out).error_bits & 
-                            pipeline(pipeline_add_out).start_bits;
+                data_o <= tr_event_out;
                 -- FIXME implement latency error
                 if l1_cnt+1=512 then
                     l1_cnt<=0;
                 else
                     l1_cnt<=l1_cnt+1;
-                end if; -- L1 cnt                
+                end if; -- L1 cnt                   
              else
                 data_o <= (others=>'0');
+                r_enabled<='1';
             end if; -- trigger
         end if; -- rising edge
     end process;

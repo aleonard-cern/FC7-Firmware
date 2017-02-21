@@ -50,7 +50,7 @@ begin
 
     --== instantiate the NCBC (or NMPA) front-end chips per hybrid blocks ==--
     CBCs:
-    for I in 0 to NCBC_PER_HYBRID - 1 generate
+    for I in 0 to NUM_CHIPS - 1 generate
         Stub_readout : entity work.stub_data_readout
         port map (
             clk320 => clk320,

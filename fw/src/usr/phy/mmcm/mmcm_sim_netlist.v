@@ -1,10 +1,10 @@
 // Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2016.3 (lin64) Build 1682563 Mon Oct 10 19:07:26 MDT 2016
-// Date        : Fri Feb 17 10:46:35 2017
+// Date        : Fri Feb 17 15:46:55 2017
 // Host        : daq running 64-bit Linux Mint 17.2 Rafaela
-// Command     : write_verilog -force -mode funcsim
-//               /home/daq/Documents/fc7_firmware/forAlishba/FC7-Firmware/fw/src/usr/phy/mmcm/mmcm_sim_netlist.v
+// Command     : write_verilog -force -mode funcsim -rename_top mmcm -prefix
+//               mmcm_ mmcm_sim_netlist.v
 // Design      : mmcm
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -14,50 +14,49 @@
 
 (* NotValidForBitStream *)
 module mmcm
-   (clk_out1,
-    clk_out2,
+   (clk_out40,
+    clk_out320,
     reset,
     locked,
     clk_in1);
-  output clk_out1;
-  output clk_out2;
+  output clk_out40;
+  output clk_out320;
   input reset;
   output locked;
   input clk_in1;
 
   (* IBUF_LOW_PWR *) wire clk_in1;
-  wire clk_out1;
-  wire clk_out2;
+  wire clk_out320;
+  wire clk_out40;
   wire locked;
   wire reset;
 
   mmcm_mmcm_clk_wiz inst
        (.clk_in1(clk_in1),
-        .clk_out1(clk_out1),
-        .clk_out2(clk_out2),
+        .clk_out320(clk_out320),
+        .clk_out40(clk_out40),
         .locked(locked),
         .reset(reset));
 endmodule
 
-(* ORIG_REF_NAME = "mmcm_clk_wiz" *) 
 module mmcm_mmcm_clk_wiz
-   (clk_out1,
-    clk_out2,
+   (clk_out40,
+    clk_out320,
     reset,
     locked,
     clk_in1);
-  output clk_out1;
-  output clk_out2;
+  output clk_out40;
+  output clk_out320;
   input reset;
   output locked;
   input clk_in1;
 
   wire clk_in1;
   wire clk_in1_mmcm;
-  wire clk_out1;
-  wire clk_out1_mmcm;
-  wire clk_out2;
-  wire clk_out2_mmcm;
+  wire clk_out320;
+  wire clk_out320_mmcm;
+  wire clk_out40;
+  wire clk_out40_mmcm;
   wire clkfbout_buf_mmcm;
   wire clkfbout_mmcm;
   wire locked;
@@ -93,12 +92,12 @@ module mmcm_mmcm_clk_wiz
         .O(clk_in1_mmcm));
   (* BOX_TYPE = "PRIMITIVE" *) 
   BUFG clkout1_buf
-       (.I(clk_out1_mmcm),
-        .O(clk_out1));
+       (.I(clk_out40_mmcm),
+        .O(clk_out40));
   (* BOX_TYPE = "PRIMITIVE" *) 
   BUFG clkout2_buf
-       (.I(clk_out2_mmcm),
-        .O(clk_out2));
+       (.I(clk_out320_mmcm),
+        .O(clk_out320));
   (* BOX_TYPE = "PRIMITIVE" *) 
   MMCME2_ADV #(
     .BANDWIDTH("OPTIMIZED"),
@@ -158,9 +157,9 @@ module mmcm_mmcm_clk_wiz
         .CLKIN2(1'b0),
         .CLKINSEL(1'b1),
         .CLKINSTOPPED(NLW_mmcm_adv_inst_CLKINSTOPPED_UNCONNECTED),
-        .CLKOUT0(clk_out1_mmcm),
+        .CLKOUT0(clk_out40_mmcm),
         .CLKOUT0B(NLW_mmcm_adv_inst_CLKOUT0B_UNCONNECTED),
-        .CLKOUT1(clk_out2_mmcm),
+        .CLKOUT1(clk_out320_mmcm),
         .CLKOUT1B(NLW_mmcm_adv_inst_CLKOUT1B_UNCONNECTED),
         .CLKOUT2(NLW_mmcm_adv_inst_CLKOUT2_UNCONNECTED),
         .CLKOUT2B(NLW_mmcm_adv_inst_CLKOUT2B_UNCONNECTED),

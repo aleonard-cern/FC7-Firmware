@@ -56,8 +56,8 @@
 //  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 //   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 //----------------------------------------------------------------------------
-// clk_out1____40.000______0.000______50.0______247.096____196.976
-// clk_out2___320.000______0.000______50.0______151.082____196.976
+// clk_out40____40.000______0.000______50.0______247.096____196.976
+// clk_out320___320.000______0.000______50.0______151.082____196.976
 //
 //----------------------------------------------------------------------------
 // Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -70,8 +70,8 @@ module mmcm_clk_wiz
 
  (// Clock in ports
   // Clock out ports
-  output        clk_out1,
-  output        clk_out2,
+  output        clk_out40,
+  output        clk_out320,
   // Status and control signals
   input         reset,
   output        locked,
@@ -93,8 +93,8 @@ wire clk_in2_mmcm;
   //    * Unused inputs are tied off
   //    * Unused outputs are labeled unused
 
-  wire        clk_out1_mmcm;
-  wire        clk_out2_mmcm;
+  wire        clk_out40_mmcm;
+  wire        clk_out320_mmcm;
   wire        clk_out3_mmcm;
   wire        clk_out4_mmcm;
   wire        clk_out5_mmcm;
@@ -144,9 +144,9 @@ wire clk_in2_mmcm;
    (
     .CLKFBOUT            (clkfbout_mmcm),
     .CLKFBOUTB           (clkfboutb_unused),
-    .CLKOUT0             (clk_out1_mmcm),
+    .CLKOUT0             (clk_out40_mmcm),
     .CLKOUT0B            (clkout0b_unused),
-    .CLKOUT1             (clk_out2_mmcm),
+    .CLKOUT1             (clk_out320_mmcm),
     .CLKOUT1B            (clkout1b_unused),
     .CLKOUT2             (clkout2_unused),
     .CLKOUT2B            (clkout2b_unused),
@@ -195,13 +195,13 @@ wire clk_in2_mmcm;
 
 
   BUFG clkout1_buf
-   (.O   (clk_out1),
-    .I   (clk_out1_mmcm));
+   (.O   (clk_out40),
+    .I   (clk_out40_mmcm));
 
 
   BUFG clkout2_buf
-   (.O   (clk_out2),
-    .I   (clk_out2_mmcm));
+   (.O   (clk_out320),
+    .I   (clk_out320_mmcm));
 
 
 

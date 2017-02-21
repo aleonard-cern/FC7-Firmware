@@ -39,21 +39,24 @@ Port (
 end generate_data;
 
 architecture Behavioral of generate_data is
-signal data_tmp : std_logic_vector(253 downto 0) := (others=>'0');
+signal data_tmp : std_logic_vector(253 downto 0) := (0=>'1', 1=>'1', others=>'0');
 begin
     process(clk_40)
-    variable strip_num : integer :=0;
+    variable strip_num : integer :=12;
+
     begin
         if rising_edge(clk_40) then
-            if strip_num>248 then
-                strip_num := 0;
-            else
-                strip_num := strip_num+5;
-            end if;
-            data_tmp(253 downto strip_num+2) <= (others=>'0');
-            data_tmp(strip_num+1 downto strip_num)  <= "11";
-            data_tmp(strip_num-1 downto 0) <= (others=>'0');
-            data <= data_tmp;
+--            if strip_num>248 then
+--                strip_num := 0;
+--            else
+--                strip_num := strip_num+5;
+--            end if;
+--            data_tmp(253 downto 12) <= (others=>'0');
+--            data_tmp(11 downto 10)  <= "11";
+--            data_tmp(9 downto 0) <= (others=>'0');
+              
+            data <= data_tmp(4 downto 0) & data_tmp(253 downto 5);
+            data_tmp <= data_tmp(4 downto 0) & data_tmp(253 downto 5);
         end if;
     end process;
 

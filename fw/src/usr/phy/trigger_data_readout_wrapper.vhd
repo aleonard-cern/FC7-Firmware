@@ -40,19 +40,20 @@ entity trigger_data_readout_wrapper is
      reset_i : in std_logic;
      triggered_data_from_fe_i : in trig_data_from_fe_t;
      sync_from_CBC_i: in stub_lines_r_array;
-     trig_data_to_hb_o : out trig_data_to_hb_t
+     trig_data_to_hb_o : out triggered_data_frame_r
+     --trig_data_to_hb_o : out trig_data_to_hb_t_array
   );
 end trigger_data_readout_wrapper;
 
 architecture Structural of trigger_data_readout_wrapper is
 
-    signal triggered_data_frame: triggered_data_frame_r_array;
+    signal triggered_data_frame: triggered_data_frame_r_array(0 to NUM_HYBRIDS-1);
 
 begin
 
     --== instantiate the NCBC (or NMPA) front-end chips per hybrid blocks ==--
     CBCs:
-    for I in 0 to NCBC_PER_HYBRID - 1 generate
+    for I in 0 to NUM_CHIPS - 1 generate
         CBC_readout : entity work.triggered_data_readout(FSM)
         port map(
              clk320 => clk320,

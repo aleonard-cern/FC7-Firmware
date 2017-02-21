@@ -67,7 +67,7 @@ architecture Behavioral of buffers is
     signal clk320_i_oddr : std_logic;
 begin
 
-    GEN_CBC: for I in 0 to NCBC_PER_HYBRID-1 generate
+    GEN_CBC: for I in 0 to NUM_CHIPS-1 generate
         GEN_dps : for J in 0 to 5 generate
             CBC_ibufds :  ibufds
             generic map(

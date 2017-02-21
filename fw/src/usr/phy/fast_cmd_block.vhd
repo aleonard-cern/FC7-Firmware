@@ -45,28 +45,32 @@ entity fast_cmd_block is
         reset_i: in std_logic;
         
         fast_cmd_i: in cmd_fastbus;
-        fast_cmd_o: out std_logic
+        fast_cmd_o: out std_logic;
+        mmcm_ready_i : in std_logic
+
     
     );
 end fast_cmd_block;
 
 architecture Behavioral of fast_cmd_block is
-    
+        signal temp_fast_cmd : std_logic := '0';
+
 begin
-    
+    fast_cmd_o <= temp_fast_cmd;
     send_fast_cmd: process(clk320)
     
         variable prev_clk : std_logic := '0';
         variable current_clk: std_logic := '0';
-        variable frame_to_send: std_logic_vector(7 downto 0) := "11000001"; 
+        --variable frame_to_send: std_logic_vector(7 downto 0) := "11000001"; 
+        variable frame_to_send: std_logic_vector(7 downto 0) := x"00"; 
 
     begin
-        if (rising_edge(clk320)) then
+        if (rising_edge(clk320) and mmcm_ready_i = '1') then
             prev_clk := current_clk;
             current_clk := clk40;
 
             if (reset_i = '1') then
-                fast_cmd_o <= '0';
+                temp_fast_cmd <= '0';
                 frame_to_send := x"00";
             else
 
@@ -74,7 +78,7 @@ begin
                     frame_to_send := "110" & fast_cmd_i.fast_reset & fast_cmd_i.trigger & fast_cmd_i.test_pulse_trigger & fast_cmd_i.orbit_reset & '1';
                 end if;
                 
-                fast_cmd_o <= frame_to_send(7);
+                temp_fast_cmd <= frame_to_send(7);
                 frame_to_send := frame_to_send(6 downto 0) & '0';
                 
             end if;

@@ -69,7 +69,7 @@ begin
                 cmd_reply_o <= (cmd_strobe => '0', cmd_data => (others => '0'), cmd_err => '0');
                 timeout <= (others => '0');
                 state <= IDLE;
-                sel := 1;
+                sel := 0;
 
             else
                 case state is
@@ -88,7 +88,7 @@ begin
                             timeout <= to_unsigned(SC_TIMEOUT - 4, 32);
 
                             -- Get hybrid number from addr
-                            sel := to_integer(unsigned(cmd_request_i.cmd_hybrid_id)) + 1;
+                            sel := to_integer(unsigned(cmd_request_i.cmd_hybrid_id));
 
                             -- Forward request to selected bus
                             cmd_request_o(sel) <= cmd_request_i;

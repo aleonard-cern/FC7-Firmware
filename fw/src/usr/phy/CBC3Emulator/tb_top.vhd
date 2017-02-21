@@ -42,7 +42,7 @@ architecture Behavioral of tb_top is
     constant clk320MHz_period : time := 10 ns; --put to 10 ns for simplicity, in real life it is 3.125ns
     constant clk100kHz_period : time := 32 us; --if I put the 320MHz clock to a period of 10ns then this one should be 32us
     constant clk40MHz_period : time := 80 ns;
---    signal ref_clk_i    : std_logic := '0';
+--    signal clk_ref_i    : std_logic := '0';
     signal reset_i     : std_logic := '0';
     signal reset     : std_logic := '0';
     -- I2C lines
@@ -71,7 +71,7 @@ architecture Behavioral of tb_top is
     signal slow_control_req_i : cmd_wbus := (cmd_strobe => '0', cmd_hybrid_id => (others => '0'), cmd_chip_id => (others => '0'), cmd_page => '0', cmd_read => '0', cmd_register => (others => '0'), cmd_data => (others => '0'), cmd_write_mask => (others => '0'));
     signal slow_control_rep_o : cmd_rbus := (cmd_strobe => '0', cmd_data => (others => '0'), cmd_err => '0');
     
-    signal scl : std_logic_vector(1 to 1) := '1';
+    signal scl : std_logic_vector(0 to NUM_HYBRIDS-1);
     signal sda : std_logic := '1';
 
     
@@ -141,9 +141,9 @@ begin
     
 --    clk40MHz_prc: process
 --    begin
---        ref_clk_i <= '1';
+--        clk_ref_i <= '1';
 --        wait for 125 ns;
---        ref_clk_i <= '0';
+--        clk_ref_i <= '0';
 --        wait for 125 ns;
 --    end process;
     

@@ -1,10 +1,10 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2016.3 (lin64) Build 1682563 Mon Oct 10 19:07:26 MDT 2016
--- Date        : Fri Feb 17 10:46:35 2017
+-- Date        : Fri Feb 17 15:46:55 2017
 -- Host        : daq running 64-bit Linux Mint 17.2 Rafaela
--- Command     : write_vhdl -force -mode funcsim
---               /home/daq/Documents/fc7_firmware/forAlishba/FC7-Firmware/fw/src/usr/phy/mmcm/mmcm_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top mmcm -prefix
+--               mmcm_ mmcm_sim_netlist.vhdl
 -- Design      : mmcm
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -16,20 +16,18 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity mmcm_mmcm_clk_wiz is
   port (
-    clk_out1 : out STD_LOGIC;
-    clk_out2 : out STD_LOGIC;
+    clk_out40 : out STD_LOGIC;
+    clk_out320 : out STD_LOGIC;
     reset : in STD_LOGIC;
     locked : out STD_LOGIC;
     clk_in1 : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mmcm_mmcm_clk_wiz : entity is "mmcm_clk_wiz";
 end mmcm_mmcm_clk_wiz;
 
 architecture STRUCTURE of mmcm_mmcm_clk_wiz is
   signal clk_in1_mmcm : STD_LOGIC;
-  signal clk_out1_mmcm : STD_LOGIC;
-  signal clk_out2_mmcm : STD_LOGIC;
+  signal clk_out320_mmcm : STD_LOGIC;
+  signal clk_out40_mmcm : STD_LOGIC;
   signal clkfbout_buf_mmcm : STD_LOGIC;
   signal clkfbout_mmcm : STD_LOGIC;
   signal NLW_mmcm_adv_inst_CLKFBOUTB_UNCONNECTED : STD_LOGIC;
@@ -75,13 +73,13 @@ clkin1_ibufg: unisim.vcomponents.IBUF
     );
 clkout1_buf: unisim.vcomponents.BUFG
      port map (
-      I => clk_out1_mmcm,
-      O => clk_out1
+      I => clk_out40_mmcm,
+      O => clk_out40
     );
 clkout2_buf: unisim.vcomponents.BUFG
      port map (
-      I => clk_out2_mmcm,
-      O => clk_out2
+      I => clk_out320_mmcm,
+      O => clk_out320
     );
 mmcm_adv_inst: unisim.vcomponents.MMCME2_ADV
     generic map(
@@ -143,9 +141,9 @@ mmcm_adv_inst: unisim.vcomponents.MMCME2_ADV
       CLKIN2 => '0',
       CLKINSEL => '1',
       CLKINSTOPPED => NLW_mmcm_adv_inst_CLKINSTOPPED_UNCONNECTED,
-      CLKOUT0 => clk_out1_mmcm,
+      CLKOUT0 => clk_out40_mmcm,
       CLKOUT0B => NLW_mmcm_adv_inst_CLKOUT0B_UNCONNECTED,
-      CLKOUT1 => clk_out2_mmcm,
+      CLKOUT1 => clk_out320_mmcm,
       CLKOUT1B => NLW_mmcm_adv_inst_CLKOUT1B_UNCONNECTED,
       CLKOUT2 => NLW_mmcm_adv_inst_CLKOUT2_UNCONNECTED,
       CLKOUT2B => NLW_mmcm_adv_inst_CLKOUT2B_UNCONNECTED,
@@ -176,8 +174,8 @@ library UNISIM;
 use UNISIM.VCOMPONENTS.ALL;
 entity mmcm is
   port (
-    clk_out1 : out STD_LOGIC;
-    clk_out2 : out STD_LOGIC;
+    clk_out40 : out STD_LOGIC;
+    clk_out320 : out STD_LOGIC;
     reset : in STD_LOGIC;
     locked : out STD_LOGIC;
     clk_in1 : in STD_LOGIC
@@ -191,8 +189,8 @@ begin
 inst: entity work.mmcm_mmcm_clk_wiz
      port map (
       clk_in1 => clk_in1,
-      clk_out1 => clk_out1,
-      clk_out2 => clk_out2,
+      clk_out320 => clk_out320,
+      clk_out40 => clk_out40,
       locked => locked,
       reset => reset
     );
